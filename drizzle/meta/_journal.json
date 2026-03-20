@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "mysql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1774024563949,
+      "tag": "0000_fast_switch",
+      "breakpoints": true
+    }
+  ]
 }

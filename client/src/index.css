@@ -43,15 +43,30 @@
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
+  /* BOCRA Brand Colors */
+  --bocra-teal: #1B7F79;
+  --bocra-forest-green: #2D6A2D;
+  --bocra-golden-yellow: #F0B429;
+  --bocra-dark-maroon: #8B1A1A;
+  --bocra-grey: #808080;
+  --bocra-bg-white: #FFFFFF;
+  --bocra-bg-light-grey: #F7F8FA;
+  --bocra-bg-deep-teal: #0F4F4B;
+  --bocra-text-primary: #1A1A2E;
+  --bocra-text-secondary: #4A5568;
+  --bocra-text-muted: #718096;
+  --bocra-border: #E2E8F0;
+  
+  /* Primary color mapping to BOCRA Teal */
+  --primary: oklch(0.48 0.15 185);
+  --primary-foreground: oklch(1 0 0);
+  --sidebar-primary: oklch(0.48 0.15 185);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --chart-1: oklch(0.48 0.15 185);
+  --chart-2: oklch(0.45 0.14 185);
+  --chart-3: oklch(0.42 0.13 185);
+  --chart-4: oklch(0.40 0.12 185);
+  --chart-5: oklch(0.38 0.11 185);
   --radius: 0.65rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.235 0.015 65);
@@ -114,12 +129,83 @@
 }
 
 @layer base {
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap');
+  
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  }
+  
+  h1 {
+    @apply font-bold text-4xl;
+    font-weight: 700;
+  }
+  
+  h2 {
+    @apply font-semibold text-3xl;
+    font-weight: 600;
+  }
+  
+  h3 {
+    @apply font-semibold text-2xl;
+    font-weight: 600;
+  }
+  
+  p {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  
+  small {
+    font-size: 13px;
+  }
+  
+  .text-muted {
+    @apply text-[#718096];
+  }
+  
+  .text-secondary {
+    @apply text-[#4A5568];
+  }
+  
+  .text-primary {
+    @apply text-[#1A1A2E];
+  }
+  
+  /* BOCRA Color Utilities */
+  .bg-bocra-teal { background-color: #1B7F79; }
+  .bg-bocra-forest-green { background-color: #2D6A2D; }
+  .bg-bocra-golden-yellow { background-color: #F0B429; }
+  .bg-bocra-dark-maroon { background-color: #8B1A1A; }
+  .bg-bocra-deep-teal { background-color: #0F4F4B; }
+  .bg-bocra-light-grey { background-color: #F7F8FA; }
+  
+  .text-bocra-teal { color: #1B7F79; }
+  .text-bocra-forest-green { color: #2D6A2D; }
+  .text-bocra-golden-yellow { color: #F0B429; }
+  .text-bocra-dark-maroon { color: #8B1A1A; }
+  
+  .border-bocra-teal { border-color: #1B7F79; }
+  .border-bocra-dark-maroon { border-color: #8B1A1A; }
+  
+  /* Accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-[#1B7F79] focus:ring-offset-2;
+  }
+  
+  .transition-smooth {
+    @apply transition-all duration-150 ease-in-out;
+  }
+  
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [type="button"]:not(:disabled),
@@ -131,6 +217,54 @@
   input[type="radio"]:not(:disabled) {
     @apply cursor-pointer;
   }
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.animate-scroll {
+  animation: scroll 30s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
 }
 
 @layer components {
