@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+pnpm-store/
+
+# Build
+dist/
+build/
+
+# Logs
+*.log
+*.logs
+.manus-logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# Environment (use Vercel dashboard for secrets)
+.env.local
+.env.*.local
+
+# Git
+.git/
+.gitignore
+
+# Patches
+patches/
+
+# Development
+.next/
