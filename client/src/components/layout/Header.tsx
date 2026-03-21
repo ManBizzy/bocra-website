@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'wouter';
 import { Menu, X, Search } from 'lucide-react';
-import { NAV_LINKS, getLoginUrl, ADMIN_LOGIN_URL } from '@/const';
+import {
+  NAV_LINKS,
+  CITIZEN_PORTAL_URL,
+  getLoginUrl,
+  ADMIN_DASHBOARD_URL,
+  ADMIN_LOGIN_URL,
+} from '@/const';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/_core/hooks/useAuth';
@@ -15,6 +21,8 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
   const drawerRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
+  const portalUrl = user ? CITIZEN_PORTAL_URL : getLoginUrl();
+  const adminUrl = user?.role === 'admin' ? ADMIN_DASHBOARD_URL : ADMIN_LOGIN_URL;
 
   // Handle scroll shadow
   useEffect(() => {
@@ -170,7 +178,7 @@ export default function Header() {
               <Button
                 className="w-full bg-bocra-teal hover:bg-bocra-teal/90 text-white"
                 onClick={() => {
-                  window.location.href = getLoginUrl();
+                  window.location.href = portalUrl;
                   setIsMobileMenuOpen(false);
                 }}
               >
@@ -181,7 +189,7 @@ export default function Header() {
                   variant="outline"
                   className="w-full"
                   onClick={() => {
-                    window.location.href = ADMIN_LOGIN_URL;
+                    window.location.href = adminUrl;
                     setIsMobileMenuOpen(false);
                   }}
                 >
@@ -249,14 +257,14 @@ export default function Header() {
               {/* Desktop Portal Button */}
               <Button
                 className="hidden sm:inline-flex bg-bocra-teal hover:bg-bocra-teal/90 text-white"
-                onClick={() => (window.location.href = getLoginUrl())}
+                onClick={() => (window.location.href = portalUrl)}
               >
                 Citizen Portal
               </Button>
 
               {/* Admin Link */}
               <a
-                href={ADMIN_LOGIN_URL}
+                href={adminUrl}
                 className="hidden lg:inline-block text-xs text-bocra-text-muted hover:text-bocra-teal transition-colors"
               >
                 Admin
