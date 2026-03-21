@@ -164,29 +164,7 @@ export const TOAST_TYPES = {
   warning: 'warning',
 };
 
-// Generate login URL at runtime so redirect URI reflects the current origin.
+// Supabase uses built-in auth - no external portal needed
 export const getLoginUrl = () => {
-  const oauthPortalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL;
-  const appId = import.meta.env.VITE_APP_ID;
-  
-  // Validation to ensure environment variables are set
-  if (!oauthPortalUrl) {
-    console.error("Missing VITE_OAUTH_PORTAL_URL environment variable");
-    return PORTAL_LOGIN_URL;
-  }
-  if (!appId) {
-    console.error("Missing VITE_APP_ID environment variable");
-    return PORTAL_LOGIN_URL;
-  }
-  
-  const redirectUri = `${window.location.origin}/api/oauth/callback`;
-  const state = btoa(redirectUri);
-
-  const url = new URL(`${oauthPortalUrl}/app-auth`);
-  url.searchParams.set("appId", appId);
-  url.searchParams.set("redirectUri", redirectUri);
-  url.searchParams.set("state", state);
-  url.searchParams.set("type", "signIn");
-
-  return url.toString();
+  return PORTAL_LOGIN_URL;
 };
