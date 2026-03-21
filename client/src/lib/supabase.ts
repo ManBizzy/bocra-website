@@ -135,25 +135,60 @@ export async function fetchEvents(limit = 5) {
 /**
  * Helper to fetch active consultations
  */
-export async function fetchConsultations(limit = 3) {
+export async function fetchConsultations(
+  limit?: number,
+  status: 'open' | 'closed' | 'archived' | 'all' = 'open'
+) {
   if (!isSupabaseConfigured()) {
     console.warn('Supabase not configured, returning empty consultations');
     return [];
   }
 
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('consultations')
       .select('*')
-      .eq('status', 'open')
-      .order('end_date', { ascending: true })
-      .limit(limit);
+      .order('end_date', { ascending: true });
+
+    if (status !== 'all') {
+      query = query.eq('status', status);
+    }
+
+    if (typeof limit === 'number') {
+      query = query.limit(limit);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
     return data || [];
   } catch (error) {
     console.error('Error fetching consultations:', error);
     return [];
+  }
+}
+
+/**
+ * Helper to fetch a single consultation by ID
+ */
+export async function fetchConsultationById(id: string) {
+  if (!isSupabaseConfigured()) {
+    console.warn('Supabase not configured');
+    return null;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('consultations')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching consultation:', error);
+    return null;
   }
 }
 
