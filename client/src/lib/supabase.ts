@@ -87,18 +87,24 @@ export async function fetchNewsBySlug(slug: string) {
 /**
  * Helper to fetch publications
  */
-export async function fetchPublications(limit = 10) {
+export async function fetchPublications(limit?: number) {
   if (!isSupabaseConfigured()) {
     console.warn('Supabase not configured, returning empty publications');
     return [];
   }
 
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('publications')
       .select('*')
-      .order('published_at', { ascending: false })
-      .limit(limit);
+      .eq('published', true)
+      .order('published_at', { ascending: false });
+
+    if (typeof limit === 'number') {
+      query = query.limit(limit);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
     return data || [];
