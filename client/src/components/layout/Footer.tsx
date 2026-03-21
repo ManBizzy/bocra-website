@@ -1,5 +1,6 @@
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { CONTACT_DETAILS, SITE_FULL_NAME } from '@/const';
+import BrandLogo from '@/components/branding/BrandLogo';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -11,11 +12,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* About Section */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-bocra-golden-yellow rounded-lg flex items-center justify-center text-bocra-deep-teal font-bold text-sm">
-                B
-              </div>
-              <span className="font-semibold">BOCRA</span>
+            <div className="mb-4">
+              <BrandLogo framed imageClassName="h-10" />
             </div>
             <p className="text-sm text-white/80 leading-relaxed">
               {SITE_FULL_NAME} regulates telecommunications, broadcasting, postal, and internet services in Botswana.
