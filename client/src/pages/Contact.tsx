@@ -316,14 +316,14 @@ export default function Contact() {
                 </p>
                 <div className="mt-6 space-y-4 text-sm">
                   <a
-                    href="/complaints"
+                    href="/services/complaints"
                     className="flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 transition-colors hover:bg-white/15"
                   >
                     <span>Consumer complaints</span>
                     <ArrowRight className="h-4 w-4" />
                   </a>
                   <a
-                    href="/licensing"
+                    href="/services/licensing"
                     className="flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 transition-colors hover:bg-white/15"
                   >
                     <span>Licensing queries</span>

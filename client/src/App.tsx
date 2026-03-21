@@ -12,9 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About"));
 const Services = lazy(() => import("./pages/Services"));
-const Licensing = lazy(() => import("./pages/Licensing"));
-const Complaints = lazy(() => import("./pages/Complaints"));
-const DomainRegistry = lazy(() => import("./pages/DomainRegistry"));
+const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
 const Consultations = lazy(() => import("./pages/Consultations"));
 const ConsultationDetail = lazy(() => import("./pages/ConsultationDetail"));
 const News = lazy(() => import("./pages/News"));
@@ -87,7 +85,7 @@ function Router() {
         {() => (
           <PublicLayout>
             <Suspense fallback={<LoadingFallback />}>
-              <Licensing />
+              <ServiceDetail slug="licensing" />
             </Suspense>
           </PublicLayout>
         )}
@@ -97,7 +95,7 @@ function Router() {
         {() => (
           <PublicLayout>
             <Suspense fallback={<LoadingFallback />}>
-              <Complaints />
+              <ServiceDetail slug="complaints" />
             </Suspense>
           </PublicLayout>
         )}
@@ -107,7 +105,17 @@ function Router() {
         {() => (
           <PublicLayout>
             <Suspense fallback={<LoadingFallback />}>
-              <DomainRegistry />
+              <ServiceDetail slug="domain-registry" />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/services/:slug"}>
+        {({ slug }) => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <ServiceDetail slug={slug} />
             </Suspense>
           </PublicLayout>
         )}

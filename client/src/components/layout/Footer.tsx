@@ -54,17 +54,17 @@ export default function Footer() {
             <h3 className="font-semibold mb-4">Services</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="/licensing" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
+                <a href="/services/licensing" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
                   Licensing
                 </a>
               </li>
               <li>
-                <a href="/complaints" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
+                <a href="/services/complaints" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
                   File Complaint
                 </a>
               </li>
               <li>
-                <a href="/domain-registry" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
+                <a href="/services/domain-registry" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
                   Domain Registry
                 </a>
               </li>
