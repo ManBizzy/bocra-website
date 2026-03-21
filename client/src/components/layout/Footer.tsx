@@ -1,5 +1,5 @@
 import { Mail, Phone, MapPin } from 'lucide-react';
-import { SITE_FULL_NAME } from '@/const';
+import { CONTACT_DETAILS, SITE_FULL_NAME } from '@/const';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -82,18 +82,22 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0 text-bocra-golden-yellow" />
-                <span className="text-white/80">Gaborone, Botswana</span>
+                <span className="text-white/80">
+                  {CONTACT_DETAILS.addressLines[0]}
+                  <br />
+                  {CONTACT_DETAILS.addressLines[1]}
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <Phone className="w-4 h-4 mt-0.5 flex-shrink-0 text-bocra-golden-yellow" />
-                <a href="tel:+267" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
-                  +267 (0) 395 1000
+                <a href={CONTACT_DETAILS.phoneHref} className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
+                  {CONTACT_DETAILS.phoneDisplay}
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <Mail className="w-4 h-4 mt-0.5 flex-shrink-0 text-bocra-golden-yellow" />
-                <a href="mailto:info@bocra.org.bw" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
-                  info@bocra.org.bw
+                <a href={CONTACT_DETAILS.emailHref} className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
+                  {CONTACT_DETAILS.email}
                 </a>
               </li>
             </ul>
