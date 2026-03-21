@@ -30,6 +30,9 @@ export interface Publication {
   slug: string;
   description: string;
   file_url: string;
+  source_url?: string;
+  storage_bucket?: string;
+  storage_path?: string;
   file_type: 'pdf' | 'doc' | 'docx' | 'xlsx' | 'pptx';
   category: string;
   published_at: string;
