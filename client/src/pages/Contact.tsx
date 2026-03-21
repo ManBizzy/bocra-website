@@ -6,9 +6,10 @@ import {
   Mail,
   MapPin,
   Phone,
+  Printer,
   SendHorizontal,
 } from 'lucide-react';
-import { SITE_DESCRIPTION } from '@/const';
+import { CONTACT_DETAILS, SITE_DESCRIPTION } from '@/const';
 import { submitContactForm } from '@/lib/supabase';
 import type { ContactForm } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -104,14 +105,15 @@ export default function Contact() {
               </h1>
               <p className="text-lg text-bocra-text-secondary">
                 Send a general enquiry, request guidance on BOCRA services, or
-                reach the team through the official contact channels below.
+                use the office details and map below to visit the BOCRA head
+                office in Gaborone.
               </p>
             </div>
           </div>
         </section>
 
         <section className="container py-8 md:py-10">
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             <Card className="border-0 bg-white p-6 shadow-sm">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-bocra-teal/10 text-bocra-teal">
                 <Mail className="h-5 w-5" />
@@ -123,10 +125,10 @@ export default function Contact() {
                 General enquiries and requests for follow-up.
               </p>
               <a
-                href="mailto:info@bocra.org.bw"
+                href={CONTACT_DETAILS.emailHref}
                 className="mt-4 inline-flex items-center gap-2 font-semibold text-bocra-teal hover:text-bocra-forest-green"
               >
-                info@bocra.org.bw
+                {CONTACT_DETAILS.email}
                 <ArrowRight className="h-4 w-4" />
               </a>
             </Card>
@@ -142,10 +144,29 @@ export default function Contact() {
                 Speak to BOCRA for immediate assistance during office hours.
               </p>
               <a
-                href="tel:+2673951000"
+                href={CONTACT_DETAILS.phoneHref}
                 className="mt-4 inline-flex items-center gap-2 font-semibold text-bocra-forest-green hover:text-bocra-teal"
               >
-                +267 (0) 395 1000
+                {CONTACT_DETAILS.phoneDisplay}
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </Card>
+
+            <Card className="border-0 bg-white p-6 shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-bocra-dark-maroon/10 text-bocra-dark-maroon">
+                <Printer className="h-5 w-5" />
+              </div>
+              <h2 className="mt-4 text-xl font-semibold text-bocra-text-primary">
+                Fax
+              </h2>
+              <p className="mt-2 text-sm text-bocra-text-secondary">
+                Send formal documents or reference material by fax if required.
+              </p>
+              <a
+                href={CONTACT_DETAILS.faxHref}
+                className="mt-4 inline-flex items-center gap-2 font-semibold text-bocra-dark-maroon hover:text-bocra-teal"
+              >
+                {CONTACT_DETAILS.faxDisplay}
                 <ArrowRight className="h-4 w-4" />
               </a>
             </Card>
@@ -160,9 +181,21 @@ export default function Contact() {
               <p className="mt-2 text-sm text-bocra-text-secondary">
                 Official BOCRA contact point in Botswana.
               </p>
-              <p className="mt-4 font-semibold text-bocra-text-primary">
-                Gaborone, Botswana
-              </p>
+              <div className="mt-4 space-y-1 text-sm text-bocra-text-primary">
+                <p className="font-semibold">{CONTACT_DETAILS.officeName}</p>
+                {CONTACT_DETAILS.addressLines.map((line) => (
+                  <p key={line}>{line}</p>
+                ))}
+              </div>
+              <a
+                href={CONTACT_DETAILS.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-2 font-semibold text-bocra-deep-teal hover:text-bocra-teal"
+              >
+                Open in Google Maps
+                <ArrowRight className="h-4 w-4" />
+              </a>
             </Card>
           </div>
         </section>
@@ -304,6 +337,50 @@ export default function Contact() {
                     <ArrowRight className="h-4 w-4" />
                   </a>
                 </div>
+              </Card>
+
+              <Card className="border-0 bg-white p-6 shadow-sm">
+                <div className="overflow-hidden rounded-2xl border border-bocra-border">
+                  <div className="aspect-[4/3] bg-bocra-light-grey">
+                    <iframe
+                      title="BOCRA office location map"
+                      src={CONTACT_DETAILS.mapsEmbedUrl}
+                      className="h-full w-full border-0"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
+                </div>
+                <h2 className="mt-6 text-xl font-semibold text-bocra-text-primary">
+                  Visit BOCRA
+                </h2>
+                <div className="mt-4 space-y-2 text-sm text-bocra-text-secondary">
+                  <p className="font-semibold text-bocra-text-primary">
+                    {CONTACT_DETAILS.officeName}
+                  </p>
+                  {CONTACT_DETAILS.addressLines.map((line) => (
+                    <p key={line}>{line}</p>
+                  ))}
+                  <p>
+                    Tel:{' '}
+                    <a
+                      href={CONTACT_DETAILS.phoneHref}
+                      className="font-medium text-bocra-teal hover:text-bocra-forest-green"
+                    >
+                      {CONTACT_DETAILS.phoneDisplay}
+                    </a>
+                  </p>
+                  <p>Fax: {CONTACT_DETAILS.faxDisplay}</p>
+                </div>
+                <a
+                  href={CONTACT_DETAILS.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-flex items-center gap-2 font-semibold text-bocra-teal transition-all hover:gap-3"
+                >
+                  Get Directions
+                  <ArrowRight className="h-4 w-4" />
+                </a>
               </Card>
 
               <Card className="border-0 bg-white p-6 shadow-sm">

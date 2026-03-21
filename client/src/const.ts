@@ -8,6 +8,22 @@ export const SITE_NAME = 'BOCRA';
 export const SITE_FULL_NAME = 'Botswana Communications Regulatory Authority';
 export const SITE_DESCRIPTION = 'BOCRA is mandated to regulate telecommunications, broadcasting, postal, and internet services in Botswana in the public interest.';
 
+const CONTACT_LOCATION_QUERY =
+  'Botswana Communications Regulatory Authority, Plot 50671 Independence Avenue, Gaborone, Botswana';
+
+export const CONTACT_DETAILS = {
+  officeName: 'Botswana Communications Regulatory Authority',
+  addressLines: ['Plot 50671 Independence Avenue', 'Gaborone, Botswana'],
+  phoneDisplay: '+267 395 7755',
+  phoneHref: 'tel:+2673957755',
+  faxDisplay: '+267 395 7976',
+  faxHref: 'tel:+2673957976',
+  email: 'info@bocra.org.bw',
+  emailHref: 'mailto:info@bocra.org.bw',
+  mapsUrl: 'https://maps.app.goo.gl/FFQsgut8p97ZZhsa6',
+  mapsEmbedUrl: `https://www.google.com/maps?q=${encodeURIComponent(CONTACT_LOCATION_QUERY)}&output=embed`,
+} as const;
+
 /**
  * BOCRA Brand Colors
  */
