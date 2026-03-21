@@ -15,6 +15,8 @@ const Services = lazy(() => import("./pages/Services"));
 const Licensing = lazy(() => import("./pages/Licensing"));
 const Complaints = lazy(() => import("./pages/Complaints"));
 const DomainRegistry = lazy(() => import("./pages/DomainRegistry"));
+const Consultations = lazy(() => import("./pages/Consultations"));
+const ConsultationDetail = lazy(() => import("./pages/ConsultationDetail"));
 const News = lazy(() => import("./pages/News"));
 const NewsArticle = lazy(() => import("./pages/NewsArticle"));
 const Publications = lazy(() => import("./pages/Publications"));
@@ -106,6 +108,26 @@ function Router() {
           <PublicLayout>
             <Suspense fallback={<LoadingFallback />}>
               <DomainRegistry />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/consultations"}>
+        {() => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <Consultations />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/consultations/:id"}>
+        {({ id }) => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <ConsultationDetail id={id} />
             </Suspense>
           </PublicLayout>
         )}
