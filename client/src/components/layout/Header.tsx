@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
+import BrandLogo from '@/components/branding/BrandLogo';
 
 export default function Header() {
   const [location] = useLocation();
@@ -210,14 +211,9 @@ export default function Header() {
         <div className="container py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2 flex-shrink-0">
-              <div className="w-10 h-10 bg-bocra-teal rounded-lg flex items-center justify-center text-white font-bold">
-                B
-              </div>
-              <div className="hidden sm:block">
-                <div className="text-sm font-semibold text-bocra-text-primary">BOCRA</div>
-                <div className="text-xs text-bocra-text-muted">Botswana Communications</div>
-              </div>
+            <a href="/" className="flex flex-shrink-0 items-center" aria-label="BOCRA home">
+              <BrandLogo imageClassName="h-10 sm:h-11" />
+              <span className="sr-only">Botswana Communications Regulatory Authority</span>
             </a>
 
             {/* Desktop Navigation */}
