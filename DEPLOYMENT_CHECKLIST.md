@@ -3,6 +3,7 @@
 ## Before Deploying to Vercel
 
 ### Supabase Setup
+
 - [ ] Create Supabase account at [supabase.com](https://supabase.com)
 - [ ] Create a new project
 - [ ] Copy **Project URL** (Settings → API)
@@ -13,6 +14,7 @@
   - `DATABASE_URL=`
 
 ### OAuth Setup
+
 - [ ] Decide on OAuth provider (Supabase Auth or custom server)
 - [ ] Get OAuth Portal URL
   - `VITE_OAUTH_PORTAL_URL=`
@@ -20,13 +22,16 @@
   - `VITE_APP_ID=`
 
 ### Secrets Generation
+
 - [ ] Generate JWT Secret:
   ```bash
   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
   ```
+
   - `JWT_SECRET=<generated-value>`
 
 ### Local Testing
+
 - [ ] Update `.env.local` with all credentials
 - [ ] Run `pnpm dev` successfully
 - [ ] Test login functionality works
@@ -34,12 +39,14 @@
 - [ ] Run tests: `pnpm test`
 
 ### Git Preparation
+
 - [ ] All code committed locally
 - [ ] No uncommitted changes
 - [ ] Push to GitHub: `git push origin main`
 - [ ] Verify all changes on GitHub
 
 ### Vercel Deployment
+
 - [ ] Create account at [vercel.com](https://vercel.com)
 - [ ] Connect GitHub repository
 - [ ] Select project
@@ -61,6 +68,7 @@
 - [ ] Test production URL works
 
 ### Team Access
+
 - [ ] Share production URL with team: `https://[your-project].vercel.app`
 - [ ] Share PR preview URL workflow with team
 - [ ] Set up GitHub branch protection (optional)
@@ -68,6 +76,7 @@
 ## File Checklist
 
 Ensure these files exist in your repo:
+
 - [ ] `vercel.json` - Vercel configuration
 - [ ] `.vercelignore` - What to ignore
 - [ ] `api/index.ts` - Serverless function handler
@@ -87,21 +96,22 @@ Ensure these files exist in your repo:
 
 ## Common Issues & Fixes
 
-| Issue | Fix |
-|-------|-----|
-| Build fails | Check Vercel build logs |
-| API not working | Verify environment variables in Vercel dashboard |
-| Database connection fails | Check DATABASE_URL in Vercel |
-| Static files 404 | Verify dist/ folder builds correctly |
-| OAuth redirect fails | Update OAuth provider redirect URL to Vercel domain |
+| Issue                     | Fix                                                 |
+| ------------------------- | --------------------------------------------------- |
+| Build fails               | Check Vercel build logs                             |
+| API not working           | Verify environment variables in Vercel dashboard    |
+| Database connection fails | Check DATABASE_URL in Vercel                        |
+| Static files 404          | Verify dist/ folder builds correctly                |
+| OAuth redirect fails      | Update OAuth provider redirect URL to Vercel domain |
 
 ---
 
 ## Once Deployed
 
 Your team can:
+
 1. **Create feature branches** locally
-2. **Push to GitHub** 
+2. **Push to GitHub**
 3. **Create PRs** - Vercel creates preview deployments
 4. **Test preview** before merging
 5. **Merge to main** - auto-deploys to production
@@ -109,6 +119,7 @@ Your team can:
 ---
 
 Ready? Let me know when you:
+
 1. Have Supabase credentials
 2. Have generated JWT secret
 3. Have pushed to GitHub

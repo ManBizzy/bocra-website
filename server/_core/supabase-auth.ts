@@ -9,13 +9,27 @@ import { SignJWT } from "jose";
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  throw new Error(
-    "Missing Supabase configuration: VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY required"
-  );
+// Lazily create Supabase client - will error when actually used if config missing
+let supabaseClient: ReturnType<typeof createClient> | null = null;
+
+function getSupabaseClient() {
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error(
+      "Missing Supabase configuration: VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY required"
+    );
+  }
+  if (!supabaseClient) {
+    supabaseClient = createClient(supabaseUrl, supabaseServiceKey);
+  }
+  return supabaseClient;
 }
 
-export const supabase = createClient(supabaseUrl, supabaseServiceKey);
+export const supabase = new Proxy({} as any, {
+  get: (target, prop) => {
+    const client = getSupabaseClient();
+    return (client as any)[prop];
+  },
+});
 
 const isNonEmptyString = (value: unknown): value is string =>
   typeof value === "string" && value.length > 0;

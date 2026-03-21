@@ -36,8 +36,12 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // Parse cookies
   app.use(cookieParser());
-  // Supabase auth routes
-  registerSupabaseAuthRoutes(app);
+  // Supabase auth routes (only if configured)
+  if (process.env.VITE_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    registerSupabaseAuthRoutes(app);
+  } else if (process.env.NODE_ENV === "production") {
+    console.error("Warning: Supabase auth routes not registered - missing environment variables");
+  }
   // tRPC API
   app.use(
     "/api/trpc",

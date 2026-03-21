@@ -1,7 +1,9 @@
 # BOCRA Website - Vercel Deployment Guide
 
 ## Quick Summary
+
 Your full-stack website will be deployed to Vercel with:
+
 - **Frontend**: React + Vite (served as static files via CDN)
 - **Backend**: Express server running as serverless functions (`/api`)
 - **Database**: Supabase (PostgreSQL)
@@ -11,6 +13,7 @@ Your full-stack website will be deployed to Vercel with:
 ## Deployment Steps
 
 ### 1. Commit Your Changes to GitHub
+
 ```bash
 git add .
 git commit -m "Setup Vercel deployment configuration"
@@ -18,6 +21,7 @@ git push origin main
 ```
 
 ### 2. Go to Vercel Dashboard
+
 - Visit [https://vercel.com](https://vercel.com)
 - Click **"New Project"**
 - Connect your GitHub account if not already connected
@@ -25,16 +29,20 @@ git push origin main
 - Click **"Import"**
 
 ### 3. Configure Project Settings
+
 Once imported, Vercel will show settings:
+
 - **Framework Preset**: Select "Other" (since you have custom setup)
 - **Build Command**: `pnpm build` ✓ (should auto-detect)
 - **Output Directory**: `dist` ✓ (should auto-detect)
 - **Install Command**: `pnpm install --frozen-lockfile` ✓
 
 ### 4. Add Environment Variables
+
 Click on **"Environment Variables"** and add:
 
 #### Required Variables:
+
 ```
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key-here
@@ -54,6 +62,7 @@ BUILT_IN_FORGE_API_KEY=your-api-key
 **Note**: Replace placeholder values with your actual Supabase/OAuth credentials.
 
 ### 5. Deploy
+
 - Click **"Deploy"**
 - Vercel will build and deploy automatically
 - You'll get a URL like: `https://bocra-website.vercel.app`
@@ -63,12 +72,14 @@ BUILT_IN_FORGE_API_KEY=your-api-key
 ## Continuous Deployment (Auto-Deploy on Push)
 
 By default, Vercel is set to auto-deploy:
+
 - Every push to `main` → automatically deploys
 - Every pull request → creates preview deployment
 
 Your team can test preview deployments in PRs before merging!
 
 ### To disable auto-deploy:
+
 Go to **Project Settings** → **Git** → toggle "Automatic deployments"
 
 ---
@@ -76,6 +87,7 @@ Go to **Project Settings** → **Git** → toggle "Automatic deployments"
 ## Testing Team Collaboration
 
 ### Development Workflow:
+
 1. Team member creates a branch: `git checkout -b feature/my-feature`
 2. Makes changes and pushes
 3. Creates a Pull Request on GitHub
@@ -90,24 +102,29 @@ Go to **Project Settings** → **Git** → toggle "Automatic deployments"
 ## Troubleshooting
 
 ### Build Fails
+
 Check the Vercel build logs:
+
 1. Go to project on Vercel
 2. Click **"Deployments"**
 3. Click the failed deployment
 4. View build logs to see error
 
 ### Environment Variables Not Working
+
 - Make sure variables are added in Vercel dashboard
 - Redeploy after adding variables
 - For client-side variables, they must start with `VITE_`
 - Server-side variables don't need prefix
 
 ### API Routes Not Working
+
 - Check that `/api/index.ts` exists
 - Verify environment variables are set
 - Check Vercel function logs
 
 ### Database Connection Issues
+
 - Verify `DATABASE_URL` is correct
 - Check that Supabase allows your IP
 - For local development, use `.env.local`
@@ -141,14 +158,17 @@ bocra-website/
 ## Monitoring & Logs
 
 ### View Deployment Logs:
+
 1. Vercel Dashboard → Deployments
 2. Click deployment
 3. View build/function logs
 
 ### Monitor Frontend Errors:
+
 Set up Vercel Analytics (optional but recommended)
 
 ### Monitor API Errors:
+
 Check function logs in Vercel dashboard
 
 ---
