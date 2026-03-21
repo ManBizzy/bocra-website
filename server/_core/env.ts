@@ -1,3 +1,8 @@
+import dotenv from "dotenv";
+
+dotenv.config({ path: ".env.local" });
+dotenv.config();
+
 export const ENV = {
   appId: process.env.VITE_APP_ID ?? "",
   cookieSecret: process.env.JWT_SECRET ?? "",
