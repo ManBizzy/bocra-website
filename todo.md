@@ -1,6 +1,7 @@
 # BOCRA Website - Project TODO
 
 ## Phase 1: Design System & Core Components
+
 - [x] Configure Tailwind with BOCRA brand colors
 - [x] Create constants file with colors, nav links, and site metadata
 - [x] Create Supabase client configuration
@@ -9,6 +10,7 @@
 - [x] Create Zustand auth store
 
 ## Phase 2: Layout Components
+
 - [x] Build Header component with sticky nav, search overlay, mobile drawer
 - [x] Build Footer component with links and branding
 - [x] Build responsive navigation with active link styling
@@ -16,6 +18,7 @@
 - [x] Create layout wrapper for public pages
 
 ## Phase 3: Homepage Sections
+
 - [x] Hero section with gradient background and animations
 - [x] Quick Services strip with 6 service cards
 - [x] About BOCRA section with mandate and regulatory areas
@@ -25,17 +28,19 @@
 - [x] Consultation section with CTA
 
 ## Phase 4: Public Pages
+
 - [x] About page with full BOCRA information
 - [x] Services page with detailed service descriptions
 - [x] Licensing page with application info
 - [x] Complaints page with submission form
 - [x] Domain Registry page with search functionality
 - [x] News listing page with filters
-- [ ] News article detail page
+- [x] News article detail page
 - [ ] Publications page with document listing
 - [ ] Contact page with contact form
 
 ## Phase 5: Citizen Portal
+
 - [ ] Portal login page
 - [ ] Portal dashboard with user info
 - [ ] License applications section
@@ -44,6 +49,7 @@
 - [ ] Application tracking section
 
 ## Phase 6: Admin Panel
+
 - [ ] Admin login page
 - [ ] Admin dashboard with maroon accent theme
 - [ ] Admin sidebar navigation
@@ -55,12 +61,14 @@
 - [ ] Consultations management (CRUD)
 
 ## Phase 7: Database Schema & Integration
+
 - [ ] Create Supabase tables (news, publications, licenses, complaints, domains, consultations, events)
 - [ ] Create tRPC procedures for all data operations
 - [ ] Implement Supabase authentication
 - [ ] Create database query helpers
 
 ## Phase 8: SEO & Accessibility
+
 - [ ] Add react-helmet-async to all pages
 - [ ] Create robots.txt
 - [ ] Create sitemap.xml
@@ -70,6 +78,7 @@
 - [ ] Add toast notifications for form submissions
 
 ## Phase 9: Polish & Optimization
+
 - [ ] Add Framer Motion animations
 - [ ] Implement lazy loading for images
 - [ ] Add blur placeholders for images
