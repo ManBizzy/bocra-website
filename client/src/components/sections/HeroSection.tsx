@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { getLoginUrl, HOMEPAGE_STATS } from '@/const';
@@ -23,6 +24,23 @@ const itemVariants = {
 };
 
 export default function HeroSection() {
+  const [showScrollCue, setShowScrollCue] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 24) {
+        setShowScrollCue(false);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <section
       className="relative flex h-screen w-full items-center justify-center overflow-hidden md:h-[85vh]"
@@ -115,9 +133,23 @@ export default function HeroSection() {
       </motion.div>
 
       <motion.div
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 transform"
+        animate={{
+          y: showScrollCue ? [0, 10, 0] : 0,
+          opacity: showScrollCue ? 1 : 0,
+        }}
+        transition={
+          showScrollCue
+            ? {
+                y: { duration: 2, repeat: Infinity },
+                opacity: { duration: 0.35, ease: 'easeOut' },
+              }
+            : {
+                opacity: { duration: 0.35, ease: 'easeOut' },
+              }
+        }
+        className={`absolute bottom-8 left-1/2 z-10 -translate-x-1/2 transform ${
+          showScrollCue ? '' : 'pointer-events-none'
+        }`}
       >
         <div className="flex flex-col items-center gap-2">
           <span className="text-xs text-white/60">Scroll to explore</span>

@@ -1,10 +1,18 @@
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { ArrowLeft, Home, Inbox, Mail, MessageSquare } from 'lucide-react';
+import {
+  ArrowLeft,
+  FileText,
+  Home,
+  Inbox,
+  Mail,
+  MessageSquare,
+} from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'sonner';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { PORTAL_LOGIN_URL } from '@/const';
+import type { LicenseApplication } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,6 +27,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 type ComplaintStatus = 'open' | 'in_review' | 'resolved' | 'closed';
 type ComplaintPriority = 'low' | 'medium' | 'high';
 type ContactStatus = 'new' | 'read' | 'responded';
+type LicenseApplicationStatus =
+  | 'submitted'
+  | 'under_review'
+  | 'more_information_required'
+  | 'approved'
+  | 'rejected';
 
 type AdminComplaint = {
   id: string;
@@ -41,11 +55,18 @@ type ContactSubmission = {
   created_at: string;
 };
 
+type AdminLicenseApplication = LicenseApplication & {
+  requester_name: string;
+  requester_email: string;
+};
+
 type AdminOverview = {
   complaintSummary: Record<ComplaintStatus | 'total', number>;
   contactSummary: Record<ContactStatus | 'total', number>;
+  licenseApplicationSummary: Record<LicenseApplicationStatus | 'total', number>;
   complaints: AdminComplaint[];
   contactSubmissions: ContactSubmission[];
+  licenseApplications: AdminLicenseApplication[];
 };
 
 const complaintBadgeClass: Record<ComplaintStatus, string> = {
@@ -61,6 +82,14 @@ const contactBadgeClass: Record<ContactStatus, string> = {
   responded: 'bg-bocra-forest-green text-white',
 };
 
+const licenseApplicationBadgeClass: Record<LicenseApplicationStatus, string> = {
+  submitted: 'bg-bocra-dark-maroon text-white',
+  under_review: 'bg-bocra-teal text-white',
+  more_information_required: 'bg-bocra-golden-yellow text-bocra-text-primary',
+  approved: 'bg-bocra-forest-green text-white',
+  rejected: 'bg-bocra-text-muted text-white',
+};
+
 const complaintStageOrder: ComplaintStatus[] = [
   'open',
   'in_review',
@@ -73,6 +102,22 @@ const complaintStageLabel: Record<ComplaintStatus, string> = {
   in_review: 'In Review',
   resolved: 'Resolved',
   closed: 'Closed',
+};
+
+const licenseApplicationStageOrder: LicenseApplicationStatus[] = [
+  'submitted',
+  'under_review',
+  'more_information_required',
+  'approved',
+  'rejected',
+];
+
+const licenseApplicationStageLabel: Record<LicenseApplicationStatus, string> = {
+  submitted: 'Submitted',
+  under_review: 'Under Review',
+  more_information_required: 'More Info',
+  approved: 'Approved',
+  rejected: 'Rejected',
 };
 
 function ComplaintProgress({ status }: { status: ComplaintStatus }) {
@@ -100,6 +145,45 @@ function ComplaintProgress({ status }: { status: ComplaintStatus }) {
   );
 }
 
+function LicenseApplicationProgress({
+  status,
+}: {
+  status: LicenseApplicationStatus;
+}) {
+  const activeSteps = {
+    submitted: ['submitted'],
+    under_review: ['submitted', 'under_review'],
+    more_information_required: [
+      'submitted',
+      'under_review',
+      'more_information_required',
+    ],
+    approved: ['submitted', 'under_review', 'approved'],
+    rejected: ['submitted', 'under_review', 'rejected'],
+  }[status] as LicenseApplicationStatus[];
+
+  return (
+    <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-5">
+      {licenseApplicationStageOrder.map((step) => {
+        const active = activeSteps.includes(step);
+
+        return (
+          <div
+            key={step}
+            className={`rounded-xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] ${
+              active
+                ? 'border-bocra-forest-green bg-bocra-forest-green/10 text-bocra-forest-green'
+                : 'border-bocra-border bg-white text-bocra-text-muted'
+            }`}
+          >
+            {licenseApplicationStageLabel[step]}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   const { user, loading, logout } = useAuth({
     redirectOnUnauthenticated: true,
@@ -111,6 +195,8 @@ export default function AdminDashboard() {
   const [updatingComplaintId, setUpdatingComplaintId] = useState<string | null>(
     null
   );
+  const [updatingLicenseApplicationId, setUpdatingLicenseApplicationId] =
+    useState<string | null>(null);
 
   const loadOverview = async () => {
     setOverviewLoading(true);
@@ -181,6 +267,48 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleLicenseApplicationStatusUpdate = async (
+    applicationId: string,
+    nextStatus: LicenseApplicationStatus
+  ) => {
+    setUpdatingLicenseApplicationId(applicationId);
+
+    try {
+      const response = await fetch(
+        `/api/admin/license-applications/${applicationId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            status: nextStatus,
+          }),
+        }
+      );
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(
+          result?.error ?? 'Could not update licence application status.'
+        );
+      }
+
+      toast.success(`Application moved to ${nextStatus.replaceAll('_', ' ')}.`);
+      await loadOverview();
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : 'Could not update licence application status.'
+      );
+    } finally {
+      setUpdatingLicenseApplicationId(null);
+    }
+  };
+
   if (!loading && user && user.role !== 'admin') {
     return (
       <>
@@ -230,8 +358,8 @@ export default function AdminDashboard() {
           <div>
             <h1 className="text-4xl font-bold">Admin Dashboard</h1>
             <p className="mt-2 text-bocra-text-secondary">
-              Review new complaints, update progress, and keep the citizen view
-              in sync.
+              Review complaints, update licence applications, and keep the
+              citizen portal view in sync.
             </p>
           </div>
           <Button variant="outline" onClick={logout}>
@@ -258,23 +386,35 @@ export default function AdminDashboard() {
             <CardHeader>
               <CardTitle>Queue Snapshot</CardTitle>
               <CardDescription>
-                Current complaint and contact workload in the Supabase demo project.
+                Current complaint, application, and contact workload in the
+                Supabase demo project.
               </CardDescription>
             </CardHeader>
             <CardContent>
               {overviewLoading ? (
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-                  {[1, 2, 3, 4, 5].map((item) => (
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+                  {[1, 2, 3, 4, 5, 6, 7].map((item) => (
                     <Skeleton key={item} className="h-24 w-full" />
                   ))}
                 </div>
               ) : (
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
                   {[
                     ['Complaints', overview?.complaintSummary.total ?? 0],
                     ['Open', overview?.complaintSummary.open ?? 0],
+                    [
+                      'Applications',
+                      overview?.licenseApplicationSummary.total ?? 0,
+                    ],
+                    [
+                      'Submitted',
+                      overview?.licenseApplicationSummary.submitted ?? 0,
+                    ],
+                    [
+                      'Under Review',
+                      overview?.licenseApplicationSummary.under_review ?? 0,
+                    ],
                     ['In Review', overview?.complaintSummary.in_review ?? 0],
-                    ['Resolved', overview?.complaintSummary.resolved ?? 0],
                     ['Contact', overview?.contactSummary.total ?? 0],
                   ].map(([label, value]) => (
                     <div
@@ -299,7 +439,7 @@ export default function AdminDashboard() {
           <p className="mt-6 text-sm text-bocra-dark-maroon">{overviewError}</p>
         )}
 
-        <div className="mt-8 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+        <div className="mt-8 grid gap-6 xl:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle>Complaint Queue</CardTitle>
@@ -397,6 +537,144 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
+          <Card>
+            <CardHeader>
+              <CardTitle>Licence Application Queue</CardTitle>
+              <CardDescription>
+                Review submitted applications, open supporting files, and update
+                the BOCRA review status.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {overviewLoading ? (
+                <div className="space-y-3">
+                  {[1, 2, 3].map((item) => (
+                    <Skeleton key={item} className="h-64 w-full" />
+                  ))}
+                </div>
+              ) : overview?.licenseApplications.length ? (
+                <div className="space-y-4">
+                  {overview.licenseApplications.map((application) => (
+                    <div
+                      key={application.id}
+                      className="rounded-2xl border border-bocra-border p-4"
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <p className="text-lg font-semibold text-bocra-text-primary">
+                            {application.application_type}
+                          </p>
+                          <p className="mt-1 text-sm text-bocra-text-secondary">
+                            {application.organization_name}
+                          </p>
+                          <p className="mt-1 text-sm text-bocra-text-secondary">
+                            {application.requester_name}
+                            {application.requester_email
+                              ? ` - ${application.requester_email}`
+                              : ''}
+                          </p>
+                        </div>
+                        <Badge
+                          className={
+                            licenseApplicationBadgeClass[application.status]
+                          }
+                        >
+                          {application.status.replaceAll('_', ' ')}
+                        </Badge>
+                      </div>
+
+                      <div className="mt-4 grid gap-3 text-sm text-bocra-text-muted md:grid-cols-3">
+                        <span className="inline-flex items-center gap-2 rounded-xl bg-bocra-light-grey px-3 py-2">
+                          <MessageSquare className="h-4 w-4 text-bocra-teal" />
+                          {application.service_area}
+                        </span>
+                        <span className="inline-flex items-center gap-2 rounded-xl bg-bocra-light-grey px-3 py-2">
+                          <Inbox className="h-4 w-4 text-bocra-teal" />
+                          {format(
+                            new Date(application.submitted_at),
+                            'dd MMM yyyy'
+                          )}
+                        </span>
+                        <span className="inline-flex items-center gap-2 rounded-xl bg-bocra-light-grey px-3 py-2">
+                          <Mail className="h-4 w-4 text-bocra-teal" />
+                          {application.contact_email}
+                        </span>
+                      </div>
+
+                      <p className="mt-4 text-sm text-bocra-text-secondary">
+                        {application.summary}
+                      </p>
+
+                      {application.review_notes && (
+                        <div className="mt-4 rounded-2xl bg-bocra-golden-yellow/15 p-4 text-sm text-bocra-text-primary">
+                          <span className="font-semibold">Review note:</span>{' '}
+                          {application.review_notes}
+                        </div>
+                      )}
+
+                      {application.attachments.length > 0 && (
+                        <div className="mt-4 flex flex-wrap gap-3">
+                          {application.attachments.map((attachment) =>
+                            attachment.signed_url ? (
+                              <a
+                                key={attachment.storage_path}
+                                href={attachment.signed_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 rounded-xl border border-bocra-border px-3 py-2 text-sm text-bocra-text-secondary transition-colors hover:bg-bocra-light-grey hover:text-bocra-teal"
+                              >
+                                <FileText className="h-4 w-4" />
+                                {attachment.name}
+                              </a>
+                            ) : null
+                          )}
+                        </div>
+                      )}
+
+                      <LicenseApplicationProgress status={application.status} />
+
+                      <div className="mt-5 flex flex-wrap gap-2">
+                        {licenseApplicationStageOrder.map((status) => (
+                          <Button
+                            key={status}
+                            type="button"
+                            size="sm"
+                            variant={
+                              application.status === status ? 'default' : 'outline'
+                            }
+                            className={
+                              application.status === status
+                                ? 'bg-bocra-forest-green text-white hover:bg-bocra-forest-green/90'
+                                : ''
+                            }
+                            disabled={
+                              updatingLicenseApplicationId === application.id ||
+                              application.status === status
+                            }
+                            onClick={() =>
+                              void handleLicenseApplicationStatusUpdate(
+                                application.id,
+                                status
+                              )
+                            }
+                          >
+                            {licenseApplicationStageLabel[status]}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-bocra-text-secondary">
+                  There are no licence applications in the queue.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="mt-6">
           <Card>
             <CardHeader>
               <CardTitle>Contact Queue</CardTitle>
