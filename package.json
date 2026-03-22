@@ -13,6 +13,7 @@
     "test": "vitest run",
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
     "content:sync:bocra-publications": "node scripts/sync-bocra-publications.mjs",
+    "content:sync:bocra-licence-register": "node scripts/sync-bocra-licence-register.mjs",
     "metadata:generate": "node scripts/generate-site-metadata.mjs",
     "demo:seed": "node scripts/seed-demo-data.mjs"
   },
@@ -83,6 +84,7 @@
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.2",
     "wouter": "^3.3.5",
+    "xlsx": "^0.18.5",
     "zod": "^4.1.12",
     "zustand": "^5.0.12"
   },

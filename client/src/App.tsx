@@ -18,6 +18,9 @@ const ConsultationDetail = lazy(() => import("./pages/ConsultationDetail"));
 const News = lazy(() => import("./pages/News"));
 const NewsArticle = lazy(() => import("./pages/NewsArticle"));
 const Publications = lazy(() => import("./pages/Publications"));
+const PublicationResource = lazy(() => import("./pages/PublicationResource"));
+const LicensingRegister = lazy(() => import("./pages/LicensingRegister"));
+const Statistics = lazy(() => import("./pages/Statistics"));
 const Contact = lazy(() => import("./pages/Contact"));
 const PortalLogin = lazy(() => import("./pages/portal/Login"));
 const PortalDashboard = lazy(() => import("./pages/portal/Dashboard"));
@@ -166,6 +169,36 @@ function Router() {
           <PublicLayout>
             <Suspense fallback={<LoadingFallback />}>
               <Publications />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/resources/:slug"}>
+        {({ slug }) => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <PublicationResource slug={slug} />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/licensing/register"}>
+        {() => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <LicensingRegister />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/statistics"}>
+        {() => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <Statistics />
             </Suspense>
           </PublicLayout>
         )}

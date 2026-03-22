@@ -78,8 +78,8 @@ export default function Services() {
               <a
                 key={portal.label}
                 href={portal.href}
-                target="_blank"
-                rel="noopener noreferrer"
+                target={portal.external ? '_blank' : undefined}
+                rel={portal.external ? 'noopener noreferrer' : undefined}
                 className="group"
               >
                 <Card className="border-0 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
@@ -93,8 +93,12 @@ export default function Services() {
                     {portal.description}
                   </p>
                   <span className="mt-5 inline-flex items-center gap-2 font-semibold text-bocra-teal transition-all group-hover:gap-3">
-                    Open portal
-                    <ExternalLink className="h-4 w-4" />
+                    {portal.external ? 'Open portal' : 'Open page'}
+                    {portal.external ? (
+                      <ExternalLink className="h-4 w-4" />
+                    ) : (
+                      <ArrowRight className="h-4 w-4" />
+                    )}
                   </span>
                 </Card>
               </a>
@@ -159,8 +163,12 @@ export default function Services() {
                     </a>
                     <a
                       href={officialChannel.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      target={officialChannel.external ? '_blank' : undefined}
+                      rel={
+                        officialChannel.external
+                          ? 'noopener noreferrer'
+                          : undefined
+                      }
                       className="inline-flex items-center gap-2 text-sm font-medium text-bocra-text-secondary transition-colors hover:text-bocra-teal"
                     >
                       Official resource
