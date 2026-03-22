@@ -77,8 +77,8 @@ export default function PortalLogin() {
           <div className="space-y-2 text-center">
             <h1 className="text-4xl font-bold">Citizen Portal</h1>
             <p className="text-bocra-text-secondary">
-              Sign in to view your BOCRA portal activity or create a starter
-              account.
+              Sign in to review BOCRA portal activity, or create a starter
+              account for the demo environment.
             </p>
           </div>
 
@@ -88,7 +88,7 @@ export default function PortalLogin() {
                 {mode === 'login' ? 'Sign in' : 'Create an account'}
               </CardTitle>
               <CardDescription>
-                This uses the Supabase-backed auth flow configured for the
+                This uses the Supabase-backed demo auth flow configured for the
                 project.
               </CardDescription>
             </CardHeader>

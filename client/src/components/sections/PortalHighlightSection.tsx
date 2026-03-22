@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Shield, Clock, Smartphone } from 'lucide-react';
+import { Clock, Shield, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { getLoginUrl } from '@/const';
@@ -7,24 +7,27 @@ import { getLoginUrl } from '@/const';
 const features = [
   {
     icon: Shield,
-    title: 'Secure Portal',
-    description: 'Your data is encrypted and protected. Login with email verification.',
+    title: 'Secure Portal Access',
+    description:
+      'Sign in with a BOCRA account and load role-based dashboard views for citizens and admins.',
   },
   {
     icon: Clock,
-    title: 'Track in Real Time',
-    description: 'Submit a complaint or licence application and track its status live.',
+    title: 'Complaint Activity',
+    description:
+      'Review seeded complaint history, queue status, and recent BOCRA activity from one place.',
   },
   {
     icon: Smartphone,
-    title: 'Mobile Friendly',
-    description: 'Works perfectly on any device, anywhere in Botswana.',
+    title: 'Mobile Ready',
+    description:
+      'The portal and public site are designed to work cleanly on phones, tablets, and desktop browsers.',
   },
 ];
 
 export default function PortalHighlightSection() {
   return (
-    <section className="w-full bg-gradient-to-r from-bocra-teal to-bocra-forest-green py-14 md:py-20 text-white">
+    <section className="w-full bg-gradient-to-r from-bocra-teal to-bocra-forest-green py-14 text-white md:py-20">
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -32,26 +35,30 @@ export default function PortalHighlightSection() {
         transition={{ duration: 0.6 }}
         className="container text-center"
       >
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything You Need, Online</h2>
-        <p className="text-lg text-white/90 mb-12 max-w-2xl mx-auto">
-          No more queues. File complaints, apply for licences, search domain registrations, and track your applications — all from your phone or computer.
+        <h2 className="mb-4 text-3xl font-bold md:text-4xl">
+          One BOCRA View for Citizens and Staff
+        </h2>
+        <p className="mx-auto mb-12 max-w-2xl text-lg text-white/90">
+          Sign in to review complaint activity, access BOCRA dashboard views,
+          and use the same Supabase-backed demo accounts that feed the admin
+          queue.
         </p>
 
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-3">
           {features.map((feature, index) => {
             const Icon = feature.icon;
+
             return (
               <motion.div
-                key={index}
+                key={feature.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
-                <Card className="p-6 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/15 transition-colors">
-                  <Icon className="w-12 h-12 mx-auto mb-4 text-bocra-golden-yellow" />
-                  <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
+                <Card className="border-white/20 bg-white/10 p-6 text-white backdrop-blur-sm transition-colors hover:bg-white/15">
+                  <Icon className="mx-auto mb-4 h-12 w-12 text-bocra-golden-yellow" />
+                  <h3 className="mb-2 text-lg font-semibold">{feature.title}</h3>
                   <p className="text-sm text-white/80">{feature.description}</p>
                 </Card>
               </motion.div>
@@ -59,7 +66,6 @@ export default function PortalHighlightSection() {
           })}
         </div>
 
-        {/* CTA Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -67,10 +73,10 @@ export default function PortalHighlightSection() {
           transition={{ duration: 0.6 }}
         >
           <Button
-            className="bg-white text-bocra-teal hover:bg-white/90 font-semibold px-8 py-6 text-base"
+            className="bg-white px-8 py-6 text-base font-semibold text-bocra-teal hover:bg-white/90"
             onClick={() => (window.location.href = getLoginUrl())}
           >
-            Access Citizen Portal
+            Open Citizen Portal
           </Button>
         </motion.div>
       </motion.div>

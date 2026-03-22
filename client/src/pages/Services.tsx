@@ -187,7 +187,7 @@ export default function Services() {
                 <div className="rounded-2xl bg-white/10 p-4">
                   <p className="font-semibold">Need a public-facing remedy?</p>
                   <p className="mt-2 text-white/75">
-                    Start with Consumer Complaints or Domain Registry.
+                    Start with Consumer Complaints or the Contact page.
                   </p>
                 </div>
                 <div className="rounded-2xl bg-white/10 p-4">

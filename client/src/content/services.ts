@@ -159,17 +159,18 @@ export const SERVICE_AREAS: ServiceArea[] = [
     icon: 'Globe',
     accent: 'gold',
     summary:
-      'Administration of the .bw country-code top-level domain and public guidance for domain registration and policy.',
+      'Public guidance on .bw administration, policy, and the official external registry workflow.',
     description:
-      'BOCRA manages and operates the .bw ccTLD as a national resource. This service area covers registry administration, policy references, operational stability of the namespace, and routes for registering .bw domains.',
+      'BOCRA manages and oversees the .bw ccTLD as a national resource. This page is informational: it explains BOCRA policy and routes visitors to the official external registry website for live registration or domain-management actions.',
     responsibilities: [
       'Administering the .bw ccTLD and its second-level domains',
       'Maintaining operational stability and utility of the .bw namespace',
       'Providing policy guidance for registration and acceptable use',
-      'Supporting fair and efficient allocation of .bw names',
+      'Directing registrants to the official external .bw registry workflow',
     ],
     useCases: [
-      'When a registrant needs to register or manage a .bw domain name',
+      'When a registrant needs BOCRA guidance before using the external .bw registry',
+      'When a registrant needs to open the live nic.net.bw registration workflow',
       'When stakeholders need .bw policy or terms-and-conditions documents',
       'When teams need BOCRA’s official ccTLD mandate and governance context',
     ],
@@ -181,9 +182,9 @@ export const SERVICE_AREAS: ServiceArea[] = [
         external: true,
       },
       {
-        label: 'Register BW',
+        label: 'Open nic.net.bw',
         href: 'https://nic.net.bw',
-        description: 'Access the live .bw registration website.',
+        description: 'Use the official external registry website for live .bw registration and management.',
         external: true,
       },
       {

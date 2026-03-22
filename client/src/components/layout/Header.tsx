@@ -9,17 +9,16 @@ import {
   ADMIN_LOGIN_URL,
 } from '@/const';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import BrandLogo from '@/components/branding/BrandLogo';
+import SiteSearch from '@/components/layout/SiteSearch';
 
 export default function Header() {
   const [location] = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const drawerRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const portalUrl = user ? CITIZEN_PORTAL_URL : getLoginUrl();
@@ -84,38 +83,7 @@ export default function Header() {
 
   return (
     <>
-      {/* Search Overlay */}
-      <AnimatePresence>
-        {isSearchOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 top-16 z-40 bg-white border-b border-bocra-border"
-          >
-            <div className="container py-6">
-              <div className="flex items-center gap-4">
-                <Input
-                  type="search"
-                  placeholder="Search for licences, news, services..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1"
-                  autoFocus
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsSearchOpen(false)}
-                  aria-label="Close search"
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <SiteSearch open={isSearchOpen} onOpenChange={setIsSearchOpen} />
 
       {/* Mobile Drawer Overlay */}
       <AnimatePresence>
@@ -243,7 +211,7 @@ export default function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                onClick={() => setIsSearchOpen(true)}
                 aria-label="Open search"
                 className="text-bocra-text-secondary hover:text-bocra-teal"
               >

@@ -80,14 +80,14 @@ export default function HeroSection() {
             className="bg-white px-8 py-6 text-base font-semibold text-bocra-teal hover:bg-white/90"
             onClick={() => (window.location.href = '/services/complaints')}
           >
-            File a Complaint
+            Consumer Complaints
           </Button>
           <Button
             variant="outline"
             className="border-white px-8 py-6 text-base font-semibold text-white hover:bg-white/10"
             onClick={() => (window.location.href = '/services/licensing')}
           >
-            Apply for Licence
+            Licensing Guidance
           </Button>
         </motion.div>
 

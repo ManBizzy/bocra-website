@@ -77,7 +77,8 @@ export default function AdminLogin() {
               <CardTitle>Admin Sign In</CardTitle>
               <CardDescription>
                 Only accounts with the <code>admin</code> role in the Supabase
-                <code> profiles</code> table can access the admin area.
+                <code> profiles</code> table can access the admin area. The
+                demo seed script provisions a reusable admin account for judging.
               </CardDescription>
             </CardHeader>
             <CardContent>
