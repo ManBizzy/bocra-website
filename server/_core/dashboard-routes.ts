@@ -18,6 +18,19 @@ type ComplaintRow = {
   created_at: string;
 };
 
+const validComplaintStatuses = new Set([
+  "open",
+  "in_review",
+  "resolved",
+  "closed",
+] as const);
+
+const validComplaintPriorities = new Set([
+  "low",
+  "medium",
+  "high",
+] as const);
+
 type ContactSubmissionRow = {
   id: string;
   name: string;
@@ -219,6 +232,63 @@ async function fetchAdminOverview() {
 }
 
 export function registerDashboardRoutes(app: Express) {
+  app.post("/api/portal/complaints", async (req: Request, res: Response) => {
+    try {
+      const user = await requireUser(req, res);
+
+      if (!user) {
+        return;
+      }
+
+      const title =
+        typeof req.body?.title === "string" ? req.body.title.trim() : "";
+      const description =
+        typeof req.body?.description === "string"
+          ? req.body.description.trim()
+          : "";
+      const category =
+        typeof req.body?.category === "string" ? req.body.category.trim() : "";
+      const priority =
+        typeof req.body?.priority === "string" ? req.body.priority : "";
+
+      if (!title || !description || !category) {
+        res
+          .status(400)
+          .json({ error: "Title, category, and description are required." });
+        return;
+      }
+
+      if (!validComplaintPriorities.has(priority as ComplaintRow["priority"])) {
+        res.status(400).json({ error: "Invalid complaint priority." });
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("complaints")
+        .insert({
+          user_id: user.id,
+          title,
+          description,
+          category,
+          priority,
+          status: "open",
+        })
+        .select(
+          "id, user_id, title, description, category, status, priority, submitted_date, created_at"
+        )
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      res.status(201).json(data);
+    } catch (error) {
+      console.error("Failed to create complaint:", error);
+      res.status(500).json({ error: "Failed to create complaint" });
+    }
+  });
+
   app.get("/api/portal/overview", async (req: Request, res: Response) => {
     try {
       const user = await requireUser(req, res);
@@ -248,6 +318,54 @@ export function registerDashboardRoutes(app: Express) {
     } catch (error) {
       console.error("Failed to load admin overview:", error);
       res.status(500).json({ error: "Failed to load admin overview" });
+    }
+  });
+
+  app.patch("/api/admin/complaints/:id", async (req: Request, res: Response) => {
+    try {
+      const user = await requireAdmin(req, res);
+
+      if (!user) {
+        return;
+      }
+
+      const complaintId = req.params.id;
+      const status =
+        typeof req.body?.status === "string" ? req.body.status : "";
+
+      if (!complaintId) {
+        res.status(400).json({ error: "Complaint id is required." });
+        return;
+      }
+
+      if (!validComplaintStatuses.has(status as ComplaintRow["status"])) {
+        res.status(400).json({ error: "Invalid complaint status." });
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("complaints")
+        .update({ status })
+        .eq("id", complaintId)
+        .select(
+          "id, user_id, title, description, category, status, priority, submitted_date, created_at"
+        )
+        .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data) {
+        res.status(404).json({ error: "Complaint not found." });
+        return;
+      }
+
+      const profiles = await fetchProfileMap([data.user_id]);
+      res.json(mapComplaintForAdmin(data as ComplaintRow, profiles));
+    } catch (error) {
+      console.error("Failed to update complaint status:", error);
+      res.status(500).json({ error: "Failed to update complaint status" });
     }
   });
 }

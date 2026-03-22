@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { ArrowLeft, Home, Inbox, Mail, MessageSquare } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
+import { toast } from 'sonner';
 import { useAuth } from '@/_core/hooks/useAuth';
-import { ADMIN_LOGIN_URL } from '@/const';
+import { PORTAL_LOGIN_URL } from '@/const';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,6 +24,7 @@ type AdminComplaint = {
   id: string;
   title: string;
   category: string;
+  description: string;
   status: ComplaintStatus;
   priority: ComplaintPriority;
   submitted_date: string;
@@ -59,61 +61,125 @@ const contactBadgeClass: Record<ContactStatus, string> = {
   responded: 'bg-bocra-forest-green text-white',
 };
 
+const complaintStageOrder: ComplaintStatus[] = [
+  'open',
+  'in_review',
+  'resolved',
+  'closed',
+];
+
+const complaintStageLabel: Record<ComplaintStatus, string> = {
+  open: 'Submitted',
+  in_review: 'In Review',
+  resolved: 'Resolved',
+  closed: 'Closed',
+};
+
+function ComplaintProgress({ status }: { status: ComplaintStatus }) {
+  const currentIndex = complaintStageOrder.indexOf(status);
+
+  return (
+    <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      {complaintStageOrder.map((step, index) => {
+        const active = currentIndex >= index;
+
+        return (
+          <div
+            key={step}
+            className={`rounded-xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] ${
+              active
+                ? 'border-bocra-teal bg-bocra-teal/10 text-bocra-teal'
+                : 'border-bocra-border bg-white text-bocra-text-muted'
+            }`}
+          >
+            {complaintStageLabel[step]}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   const { user, loading, logout } = useAuth({
     redirectOnUnauthenticated: true,
-    redirectPath: ADMIN_LOGIN_URL,
+    redirectPath: PORTAL_LOGIN_URL,
   });
   const [overview, setOverview] = useState<AdminOverview | null>(null);
   const [overviewLoading, setOverviewLoading] = useState(true);
   const [overviewError, setOverviewError] = useState<string | null>(null);
+  const [updatingComplaintId, setUpdatingComplaintId] = useState<string | null>(
+    null
+  );
+
+  const loadOverview = async () => {
+    setOverviewLoading(true);
+
+    try {
+      const response = await fetch('/api/admin/overview', {
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Could not load admin queues.');
+      }
+
+      const payload = (await response.json()) as AdminOverview;
+      setOverview(payload);
+      setOverviewError(null);
+    } catch (error) {
+      setOverviewError(
+        error instanceof Error ? error.message : 'Could not load admin queues.'
+      );
+    } finally {
+      setOverviewLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (loading || !user || user.role !== 'admin') {
       return;
     }
 
-    let ignore = false;
-
-    const loadOverview = async () => {
-      setOverviewLoading(true);
-
-      try {
-        const response = await fetch('/api/admin/overview', {
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          throw new Error('Could not load admin queues.');
-        }
-
-        const payload = (await response.json()) as AdminOverview;
-
-        if (!ignore) {
-          setOverview(payload);
-          setOverviewError(null);
-        }
-      } catch (error) {
-        if (!ignore) {
-          setOverviewError(
-            error instanceof Error
-              ? error.message
-              : 'Could not load admin queues.'
-          );
-        }
-      } finally {
-        if (!ignore) {
-          setOverviewLoading(false);
-        }
-      }
-    };
-
     void loadOverview();
-
-    return () => {
-      ignore = true;
-    };
   }, [loading, user]);
+
+  const handleStatusUpdate = async (
+    complaintId: string,
+    nextStatus: ComplaintStatus
+  ) => {
+    setUpdatingComplaintId(complaintId);
+
+    try {
+      const response = await fetch(`/api/admin/complaints/${complaintId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          status: nextStatus,
+        }),
+      });
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(result?.error ?? 'Could not update complaint status.');
+      }
+
+      toast.success(`Complaint moved to ${nextStatus.replace('_', ' ')}.`);
+      await loadOverview();
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : 'Could not update complaint status.'
+      );
+    } finally {
+      setUpdatingComplaintId(null);
+    }
+  };
 
   if (!loading && user && user.role !== 'admin') {
     return (
@@ -127,7 +193,7 @@ export default function AdminDashboard() {
             This account does not have admin access.
           </p>
           <a
-            href="/portal/login"
+            href={PORTAL_LOGIN_URL}
             className="mt-6 inline-block text-bocra-teal hover:underline"
           >
             Return to portal sign in
@@ -164,8 +230,8 @@ export default function AdminDashboard() {
           <div>
             <h1 className="text-4xl font-bold">Admin Dashboard</h1>
             <p className="mt-2 text-bocra-text-secondary">
-              Review the seeded complaint and contact queues for the hackathon
-              demo environment.
+              Review new complaints, update progress, and keep the citizen view
+              in sync.
             </p>
           </div>
           <Button variant="outline" onClick={logout}>
@@ -197,18 +263,19 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               {overviewLoading ? (
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                  {[1, 2, 3, 4].map((item) => (
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                  {[1, 2, 3, 4, 5].map((item) => (
                     <Skeleton key={item} className="h-24 w-full" />
                   ))}
                 </div>
               ) : (
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
                   {[
                     ['Complaints', overview?.complaintSummary.total ?? 0],
                     ['Open', overview?.complaintSummary.open ?? 0],
                     ['In Review', overview?.complaintSummary.in_review ?? 0],
-                    ['Contact Messages', overview?.contactSummary.total ?? 0],
+                    ['Resolved', overview?.complaintSummary.resolved ?? 0],
+                    ['Contact', overview?.contactSummary.total ?? 0],
                   ].map(([label, value]) => (
                     <div
                       key={label}
@@ -237,14 +304,14 @@ export default function AdminDashboard() {
             <CardHeader>
               <CardTitle>Complaint Queue</CardTitle>
               <CardDescription>
-                Latest complaint records visible to the demo admin account.
+                Review incoming complaints and move each one through the workflow.
               </CardDescription>
             </CardHeader>
             <CardContent>
               {overviewLoading ? (
                 <div className="space-y-3">
                   {[1, 2, 3, 4].map((item) => (
-                    <Skeleton key={item} className="h-28 w-full" />
+                    <Skeleton key={item} className="h-56 w-full" />
                   ))}
                 </div>
               ) : overview?.complaints.length ? (
@@ -285,6 +352,39 @@ export default function AdminDashboard() {
                           <Inbox className="h-4 w-4 text-bocra-teal" />
                           {format(new Date(complaint.submitted_date), 'dd MMM yyyy')}
                         </span>
+                      </div>
+
+                      <p className="mt-4 text-sm text-bocra-text-secondary">
+                        {complaint.description}
+                      </p>
+
+                      <ComplaintProgress status={complaint.status} />
+
+                      <div className="mt-5 flex flex-wrap gap-2">
+                        {complaintStageOrder.map((status) => (
+                          <Button
+                            key={status}
+                            type="button"
+                            size="sm"
+                            variant={
+                              complaint.status === status ? 'default' : 'outline'
+                            }
+                            className={
+                              complaint.status === status
+                                ? 'bg-bocra-teal text-white hover:bg-bocra-teal/90'
+                                : ''
+                            }
+                            disabled={
+                              updatingComplaintId === complaint.id ||
+                              complaint.status === status
+                            }
+                            onClick={() =>
+                              void handleStatusUpdate(complaint.id, status)
+                            }
+                          >
+                            {complaintStageLabel[status]}
+                          </Button>
+                        ))}
                       </div>
                     </div>
                   ))}
