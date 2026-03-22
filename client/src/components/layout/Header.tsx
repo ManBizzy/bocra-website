@@ -6,7 +6,6 @@ import {
   CITIZEN_PORTAL_URL,
   getLoginUrl,
   ADMIN_DASHBOARD_URL,
-  ADMIN_LOGIN_URL,
 } from '@/const';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/_core/hooks/useAuth';
@@ -22,7 +21,7 @@ export default function Header() {
   const drawerRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const portalUrl = user ? CITIZEN_PORTAL_URL : getLoginUrl();
-  const adminUrl = user?.role === 'admin' ? ADMIN_DASHBOARD_URL : ADMIN_LOGIN_URL;
+  const adminUrl = ADMIN_DASHBOARD_URL;
 
   // Handle scroll shadow
   useEffect(() => {
@@ -151,7 +150,7 @@ export default function Header() {
                   setIsMobileMenuOpen(false);
                 }}
               >
-                Citizen Portal
+                Open Portal
               </Button>
               {user?.role === 'admin' && (
                 <Button
@@ -223,16 +222,17 @@ export default function Header() {
                 className="hidden sm:inline-flex bg-bocra-teal hover:bg-bocra-teal/90 text-white"
                 onClick={() => (window.location.href = portalUrl)}
               >
-                Citizen Portal
+                Portal
               </Button>
 
-              {/* Admin Link */}
-              <a
-                href={adminUrl}
-                className="hidden lg:inline-block text-xs text-bocra-text-muted hover:text-bocra-teal transition-colors"
-              >
-                Admin
-              </a>
+              {user?.role === 'admin' && (
+                <a
+                  href={adminUrl}
+                  className="hidden lg:inline-block text-xs text-bocra-text-muted hover:text-bocra-teal transition-colors"
+                >
+                  Admin
+                </a>
+              )}
 
               {/* Mobile Menu Button */}
               <Button
