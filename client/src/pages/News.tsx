@@ -12,7 +12,7 @@ import { format } from 'date-fns';
 export default function News() {
   const { news, loading, error } = useNews();
   const [activeCategory, setActiveCategory] = useState<
-    'all' | 'announcement' | 'consultation' | 'regulation' | 'update'
+    'all' | 'announcement' | 'consultation' | 'regulation' | 'update' | 'vacancy'
   >('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -37,6 +37,7 @@ export default function News() {
     { key: 'consultation', label: 'Consultations' },
     { key: 'regulation', label: 'Regulation' },
     { key: 'update', label: 'Updates' },
+    { key: 'vacancy', label: 'Vacancies' },
   ] as const;
 
   return (
@@ -73,7 +74,8 @@ export default function News() {
                 News & Announcements
               </h1>
               <p className="text-lg text-bocra-text-secondary">
-                Latest media releases, regulatory updates, and public notices
+                Latest media releases, social updates, regulatory notices, and
+                vacancy announcements
                 from the Botswana Communications Regulatory Authority.
               </p>
             </div>
@@ -143,7 +145,9 @@ export default function News() {
                 <Card className="overflow-hidden border-0 bg-bocra-deep-teal text-white shadow-lg">
                   <div className="grid md:grid-cols-[1.2fr_0.8fr]">
                     <div className="p-8 md:p-10">
-                      <span className="inline-flex rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                      <span
+                        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${NEWS_CATEGORIES[featuredArticle.category].color}`}
+                      >
                         {NEWS_CATEGORIES[featuredArticle.category].label}
                       </span>
                       <h2 className="mt-5 text-3xl font-bold md:text-4xl">
@@ -207,10 +211,15 @@ export default function News() {
 
                       <div className="flex flex-1 flex-col p-6">
                         <span
-                          className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold text-white ${category.color}`}
+                          className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold ${category.color}`}
                         >
                           {category.label}
                         </span>
+                        {article.source_label && (
+                          <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-bocra-text-muted">
+                            {article.source_label}
+                          </p>
+                        )}
 
                         <h3 className="mt-4 text-xl font-semibold text-bocra-text-primary">
                           {article.title}

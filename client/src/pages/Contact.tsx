@@ -3,13 +3,17 @@ import { Helmet } from 'react-helmet-async';
 import {
   ArrowRight,
   CheckCircle2,
+  Facebook,
+  Linkedin,
   Mail,
   MapPin,
   Phone,
   Printer,
   SendHorizontal,
+  Twitter,
+  Youtube,
 } from 'lucide-react';
-import { CONTACT_DETAILS, SITE_DESCRIPTION } from '@/const';
+import { CONTACT_DETAILS, SITE_DESCRIPTION, SOCIAL_LINKS } from '@/const';
 import { submitContactForm } from '@/lib/supabase';
 import type { ContactForm } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -26,6 +30,13 @@ const INITIAL_FORM: ContactForm = {
   subject: '',
   message: '',
 };
+
+const SOCIAL_ICONS = {
+  Facebook,
+  LinkedIn: Linkedin,
+  YouTube: Youtube,
+  X: Twitter,
+} as const;
 
 export default function Contact() {
   const [form, setForm] = useState<ContactForm>(INITIAL_FORM);
@@ -108,6 +119,29 @@ export default function Contact() {
                 use the office details and map below to visit the BOCRA head
                 office in Gaborone.
               </p>
+              <div className="pt-2">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-bocra-text-muted">
+                  Social channels
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  {SOCIAL_LINKS.map((link) => {
+                    const Icon = SOCIAL_ICONS[link.label];
+
+                    return (
+                      <a
+                        key={link.label}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-full border border-bocra-border bg-bocra-light-grey px-4 py-2 text-sm font-semibold text-bocra-text-primary transition-colors hover:border-bocra-teal hover:text-bocra-teal"
+                      >
+                        <Icon className="h-4 w-4" />
+                        {link.label}
+                      </a>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
         </section>

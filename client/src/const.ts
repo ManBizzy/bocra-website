@@ -26,6 +26,16 @@ export const CONTACT_DETAILS = {
   mapsEmbedUrl: `https://www.google.com/maps?q=${encodeURIComponent(CONTACT_LOCATION_QUERY)}&output=embed`,
 } as const;
 
+export const SOCIAL_LINKS = [
+  { label: 'Facebook', href: 'https://www.facebook.com/BTAbw' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/bta_3/' },
+  {
+    label: 'YouTube',
+    href: 'https://www.youtube.com/channel/UCkv70wCxbxy7OkC12QlL3ZA/feed',
+  },
+  { label: 'X', href: 'https://x.com/bocrabw' },
+] as const;
+
 /**
  * BOCRA Brand Colors
  */
@@ -147,10 +157,11 @@ export const HOMEPAGE_STATS = [
  * News categories with colors
  */
 export const NEWS_CATEGORIES = {
-  announcement: { label: 'Announcement', color: 'bg-bocra-teal' },
-  consultation: { label: 'Consultation', color: 'bg-bocra-forest-green' },
-  regulation: { label: 'Regulation', color: 'bg-bocra-dark-maroon' },
-  update: { label: 'Update', color: 'bg-bocra-teal' },
+  announcement: { label: 'Announcement', color: 'bg-bocra-teal text-white' },
+  consultation: { label: 'Consultation', color: 'bg-bocra-forest-green text-white' },
+  regulation: { label: 'Regulation', color: 'bg-bocra-dark-maroon text-white' },
+  update: { label: 'Update', color: 'bg-bocra-teal text-white' },
+  vacancy: { label: 'Vacancy', color: 'bg-bocra-golden-yellow text-bocra-text-primary' },
 };
 
 /**

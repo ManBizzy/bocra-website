@@ -14,6 +14,7 @@
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
     "content:sync:bocra-publications": "node scripts/sync-bocra-publications.mjs",
     "content:sync:bocra-licence-register": "node scripts/sync-bocra-licence-register.mjs",
+    "content:sync:bocra-social-news": "node scripts/sync-bocra-social-news.mjs",
     "metadata:generate": "node scripts/generate-site-metadata.mjs",
     "demo:seed": "node scripts/seed-demo-data.mjs"
   },
