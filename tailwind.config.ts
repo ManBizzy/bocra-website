@@ -9,6 +9,13 @@ const config: Config = {
     extend: {
       colors: {
         bocra: {
+          // BOCRA Service Area Colors
+          'postal': '#AF2F54',           // Postal (Pink/Magenta)
+          'internet': '#EFC812',         // Internet (Golden Yellow)
+          'telecom': '#30B6CF',          // Telecommunication (Cyan/Blue)
+          'broadcast': '#2D6A2D',        // Broadcasting (Green)
+          
+          // Legacy colors (kept for backward compatibility)
           teal: '#1B7F79',
           'forest-green': '#2D6A2D',
           'golden-yellow': '#F0B429',

@@ -27,7 +27,7 @@ export default function HeroSection() {
     <section
       className="relative w-full h-screen md:h-[85vh] flex items-center justify-center overflow-hidden"
       style={{
-        background: `linear-gradient(135deg, rgba(15, 79, 75, 0.9) 0%, rgba(27, 127, 121, 0.9) 100%), 
+        background: `linear-gradient(135deg, rgba(48, 182, 207, 0.9) 0%, rgba(45, 106, 45, 0.9) 100%), 
                      repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px)`,
       }}
     >
@@ -75,7 +75,7 @@ export default function HeroSection() {
         {/* CTA Buttons */}
         <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
           <Button
-            className="bg-white text-bocra-teal hover:bg-white/90 font-semibold px-8 py-6 text-base"
+            className="bg-white text-bocra-internet hover:bg-white/90 font-semibold px-8 py-6 text-base"
             onClick={() => (window.location.href = '/complaints')}
           >
             File a Complaint

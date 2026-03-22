@@ -43,7 +43,13 @@
 }
 
 :root {
-  /* BOCRA Brand Colors */
+  /* BOCRA Service Area Colors */
+  --bocra-postal: #AF2F54;
+  --bocra-internet: #EFC812;
+  --bocra-telecom: #30B6CF;
+  --bocra-broadcast: #2D6A2D;
+  
+  /* Legacy Brand Colors */
   --bocra-teal: #1B7F79;
   --bocra-forest-green: #2D6A2D;
   --bocra-golden-yellow: #F0B429;

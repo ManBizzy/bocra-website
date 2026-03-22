@@ -14,7 +14,7 @@ export default function About() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-bocra-teal to-bocra-forest-green text-black py-16">
+      <section className="bg-gradient-to-r from-bocra-telecom to-bocra-broadcast text-black py-16">
         <div className="container mx-auto px-4">
           <h1 className="text-5xl font-bold mb-4 text-black">About BOCRA</h1>
           <p className="text-xl text-black/90 max-w-2xl">
