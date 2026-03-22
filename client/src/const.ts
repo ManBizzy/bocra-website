@@ -7,6 +7,34 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 export const SITE_NAME = 'BOCRA';
 export const SITE_FULL_NAME = 'Botswana Communications Regulatory Authority';
 export const SITE_DESCRIPTION = 'BOCRA is mandated to regulate telecommunications, broadcasting, postal, and internet services in Botswana in the public interest.';
+export const SITE_URL =
+  import.meta.env.VITE_SITE_URL || 'https://bocra-website-gilt.vercel.app';
+
+const CONTACT_LOCATION_QUERY =
+  'Botswana Communications Regulatory Authority, Plot 50671 Independence Avenue, Gaborone, Botswana';
+
+export const CONTACT_DETAILS = {
+  officeName: 'Botswana Communications Regulatory Authority',
+  addressLines: ['Plot 50671 Independence Avenue', 'Gaborone, Botswana'],
+  phoneDisplay: '+267 395 7755',
+  phoneHref: 'tel:+2673957755',
+  faxDisplay: '+267 395 7976',
+  faxHref: 'tel:+2673957976',
+  email: 'info@bocra.org.bw',
+  emailHref: 'mailto:info@bocra.org.bw',
+  mapsUrl: 'https://maps.app.goo.gl/FFQsgut8p97ZZhsa6',
+  mapsEmbedUrl: `https://www.google.com/maps?q=${encodeURIComponent(CONTACT_LOCATION_QUERY)}&output=embed`,
+} as const;
+
+export const SOCIAL_LINKS = [
+  { label: 'Facebook', href: 'https://www.facebook.com/BTAbw' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/bta_3/' },
+  {
+    label: 'YouTube',
+    href: 'https://www.youtube.com/channel/UCkv70wCxbxy7OkC12QlL3ZA/feed',
+  },
+  { label: 'X', href: 'https://x.com/bocrabw' },
+] as const;
 
 /**
  * BOCRA Brand Colors
@@ -43,9 +71,9 @@ export const NAV_LINKS = [
   { label: 'Home', href: '/', icon: 'Home' },
   { label: 'About', href: '/about', icon: 'Info' },
   { label: 'Services', href: '/services', icon: 'Briefcase' },
-  { label: 'Licensing', href: '/licensing', icon: 'FileCheck' },
-  { label: 'Complaints', href: '/complaints', icon: 'MessageSquare' },
-  { label: 'Domain Registry', href: '/domain-registry', icon: 'Globe' },
+  { label: 'Licensing', href: '/services/licensing', icon: 'FileCheck' },
+  { label: 'Complaints', href: '/services/complaints', icon: 'MessageSquare' },
+  { label: 'Domain Registry', href: '/services/domain-registry', icon: 'Globe' },
   { label: 'News', href: '/news', icon: 'Newspaper' },
   { label: 'Publications', href: '/publications', icon: 'BookOpen' },
   { label: 'Contact', href: '/contact', icon: 'Mail' },
@@ -64,19 +92,19 @@ export const QUICK_SERVICES = [
   {
     id: 'licensing',
     label: 'Operator Licensing',
-    href: '/licensing',
+    href: '/services/licensing',
     icon: 'FileCheck',
   },
   {
     id: 'complaints',
     label: 'Consumer Complaints',
-    href: '/complaints',
+    href: '/services/complaints',
     icon: 'MessageSquare',
   },
   {
     id: 'domain',
     label: 'Domain Registry (.bw)',
-    href: '/domain-registry',
+    href: '/services/domain-registry',
     icon: 'Globe',
   },
   {
@@ -111,7 +139,7 @@ export const REGULATORY_AREAS = [
   },
   {
     title: 'Internet Governance',
-    description: 'Managing .bw domains and internet infrastructure',
+    description: 'Providing .bw policy guidance and internet governance oversight',
   },
 ];
 
@@ -129,10 +157,11 @@ export const HOMEPAGE_STATS = [
  * News categories with colors
  */
 export const NEWS_CATEGORIES = {
-  announcement: { label: 'Announcement', color: 'bg-bocra-teal' },
-  consultation: { label: 'Consultation', color: 'bg-bocra-forest-green' },
-  regulation: { label: 'Regulation', color: 'bg-bocra-dark-maroon' },
-  update: { label: 'Update', color: 'bg-bocra-teal' },
+  announcement: { label: 'Announcement', color: 'bg-bocra-teal text-white' },
+  consultation: { label: 'Consultation', color: 'bg-bocra-forest-green text-white' },
+  regulation: { label: 'Regulation', color: 'bg-bocra-dark-maroon text-white' },
+  update: { label: 'Update', color: 'bg-bocra-teal text-white' },
+  vacancy: { label: 'Vacancy', color: 'bg-bocra-golden-yellow text-bocra-text-primary' },
 };
 
 /**

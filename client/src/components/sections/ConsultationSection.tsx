@@ -3,29 +3,11 @@ import { Clock, FileText, ArrowRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useState, useEffect } from 'react';
-import { fetchConsultations } from '@/lib/supabase';
-import type { Consultation } from '@/types';
+import { useConsultations } from '@/hooks/useConsultations';
 import { format, differenceInDays } from 'date-fns';
 
 export default function ConsultationSection() {
-  const [consultations, setConsultations] = useState<Consultation[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadConsultations = async () => {
-      try {
-        const data = await fetchConsultations(3);
-        setConsultations(data);
-      } catch (error) {
-        console.error('Error loading consultations:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadConsultations();
-  }, []);
+  const { consultations, loading } = useConsultations(3);
 
   if (loading) {
     return (

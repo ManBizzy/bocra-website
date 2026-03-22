@@ -1,203 +1,144 @@
-# BOCRA Website - Vercel Deployment Guide
+# BOCRA Website Deployment Guide
 
-## Quick Summary
+## Current Architecture
 
-Your full-stack website will be deployed to Vercel with:
+- Public site: React + Vite static build
+- Build output: `dist/public`
+- Metadata generation: `pnpm build` now generates `robots.txt` and `sitemap.xml` from `VITE_SITE_URL`
+- Demo auth flow: Supabase-backed users and profiles, exposed through the Express server in [`server/_core/index.ts`](./server/_core/index.ts)
+- Demo seed: `pnpm demo:seed`
 
-- **Frontend**: React + Vite (served as static files via CDN)
-- **Backend**: Express server running as serverless functions (`/api`)
-- **Database**: Supabase (PostgreSQL)
+## Important Deployment Reality
 
----
+The current `vercel.json` configuration deploys the public site as a static app from `dist/public`.
 
-## Deployment Steps
+That means:
 
-### 1. Commit Your Changes to GitHub
+- Public pages work on Vercel
+- Portal and admin demo flows require the Express server from [`server/_core/index.ts`](./server/_core/index.ts) or a future migration to browser-native Supabase auth
+- There is no `api/index.ts` requirement in this repo
+
+If you want hosted portal/admin login today, deploy the Node server separately or run the full stack locally with `pnpm dev`.
+
+## Environment Variables
+
+### Frontend / build
+
+```env
+VITE_SITE_URL=https://bocra-website-gilt.vercel.app
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+```
+
+`VITE_SUPABASE_ANON_KEY` is still supported as a fallback, but the preferred key name in this repo is `VITE_SUPABASE_PUBLISHABLE_KEY`.
+
+### Server / demo auth
+
+```env
+SUPABASE_SECRET_KEY=sb_secret_...
+JWT_SECRET=replace-with-a-long-random-string
+```
+
+`SUPABASE_SERVICE_ROLE_KEY` is also accepted as a fallback for the server scripts and auth layer.
+
+### Optional
+
+```env
+VITE_SUPABASE_ANON_KEY=...
+```
+
+`DATABASE_URL` is not required for the current Supabase-first public content and demo auth flow.
+
+## Build Commands
+
+### Public static build
 
 ```bash
-git add .
-git commit -m "Setup Vercel deployment configuration"
-git push origin main
+pnpm build
 ```
 
-### 2. Go to Vercel Dashboard
+This does two things:
 
-- Visit [https://vercel.com](https://vercel.com)
-- Click **"New Project"**
-- Connect your GitHub account if not already connected
-- Search for your "bocra-website" repository
-- Click **"Import"**
+1. builds the client to `dist/public`
+2. generates `dist/public/robots.txt` and `dist/public/sitemap.xml`
 
-### 3. Configure Project Settings
+### Local full-stack demo
 
-Once imported, Vercel will show settings:
-
-- **Framework Preset**: Select "Other" (since you have custom setup)
-- **Build Command**: `pnpm build` ✓ (should auto-detect)
-- **Output Directory**: `dist` ✓ (should auto-detect)
-- **Install Command**: `pnpm install --frozen-lockfile` ✓
-
-### 4. Add Environment Variables
-
-Click on **"Environment Variables"** and add:
-
-#### Required Variables:
-
-```
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
-VITE_APP_ID=your-app-id
-VITE_OAUTH_PORTAL_URL=http://localhost:3001  # Or your OAuth server URL
-VITE_ANALYTICS_ENDPOINT=https://your-analytics.com  # Optional
-VITE_ANALYTICS_WEBSITE_ID=your-analytics-id  # Optional
-
-# Server-side only (not exposed to frontend)
-JWT_SECRET=your-jwt-secret-key
-DATABASE_URL=postgresql://user:password@your-db-host:5432/bocra_db
-OAUTH_SERVER_URL=http://localhost:3001
-BUILT_IN_FORGE_API_URL=https://api.example.com
-BUILT_IN_FORGE_API_KEY=your-api-key
+```bash
+pnpm dev
 ```
 
-**Note**: Replace placeholder values with your actual Supabase/OAuth credentials.
+This runs the Express server plus the Vite app together so `/api/auth/*`, `/api/portal/overview`, and `/api/admin/overview` are available.
 
-### 5. Deploy
+## Vercel Settings
 
-- Click **"Deploy"**
-- Vercel will build and deploy automatically
-- You'll get a URL like: `https://bocra-website.vercel.app`
+Use these project settings:
 
----
+- Build Command: `pnpm build`
+- Install Command: `pnpm install`
+- Output Directory: `dist/public`
 
-## Continuous Deployment (Auto-Deploy on Push)
+Set at least these frontend env vars in Vercel:
 
-By default, Vercel is set to auto-deploy:
-
-- Every push to `main` → automatically deploys
-- Every pull request → creates preview deployment
-
-Your team can test preview deployments in PRs before merging!
-
-### To disable auto-deploy:
-
-Go to **Project Settings** → **Git** → toggle "Automatic deployments"
-
----
-
-## Testing Team Collaboration
-
-### Development Workflow:
-
-1. Team member creates a branch: `git checkout -b feature/my-feature`
-2. Makes changes and pushes
-3. Creates a Pull Request on GitHub
-4. Vercel automatically creates a **preview deployment**
-5. PR comment shows preview URL (e.g., `bocra-website-preview.vercel.app`)
-6. Team tests the preview
-7. Once approved, merge to `main`
-8. Vercel auto-deploys to production
-
----
-
-## Troubleshooting
-
-### Build Fails
-
-Check the Vercel build logs:
-
-1. Go to project on Vercel
-2. Click **"Deployments"**
-3. Click the failed deployment
-4. View build logs to see error
-
-### Environment Variables Not Working
-
-- Make sure variables are added in Vercel dashboard
-- Redeploy after adding variables
-- For client-side variables, they must start with `VITE_`
-- Server-side variables don't need prefix
-
-### API Routes Not Working
-
-- Check that `/api/index.ts` exists
-- Verify environment variables are set
-- Check Vercel function logs
-
-### Database Connection Issues
-
-- Verify `DATABASE_URL` is correct
-- Check that Supabase allows your IP
-- For local development, use `.env.local`
-- For Vercel, use Vercel dashboard environment variables
-
----
-
-## File Structure for Vercel
-
-```
-bocra-website/
-├── client/                 # Frontend (React + Vite)
-│   ├── src/
-│   └── index.html
-├── server/                 # Backend (Express)
-│   ├── _core/
-│   │   └── index.ts
-│   └── routers.ts
-├── api/                    # ← Vercel serverless functions
-│   └── index.ts           # ← API handler
-├── dist/                   # ← Built frontend (generated)
-├── vite.config.ts         # Frontend build config
-├── vercel.json            # ← Vercel config
-├── .vercelignore          # ← Vercel ignore file
-├── .env.local             # Local development (not deployed)
-└── package.json
+```env
+VITE_SITE_URL=https://bocra-website-gilt.vercel.app
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 ```
 
----
+## Demo Seed Workflow
 
-## Monitoring & Logs
+Run this before judging:
 
-### View Deployment Logs:
+```bash
+pnpm demo:seed
+```
 
-1. Vercel Dashboard → Deployments
-2. Click deployment
-3. View build/function logs
+Default seeded accounts:
 
-### Monitor Frontend Errors:
+- Admin: `admin.demo@bocra.org.bw`
+- Citizen: `citizen.demo@bocra.org.bw`
 
-Set up Vercel Analytics (optional but recommended)
+The script also seeds:
 
-### Monitor API Errors:
+- 4 complaints across `open`, `in_review`, `resolved`, and `closed`
+- 2 contact submissions across `new` and `read`
 
-Check function logs in Vercel dashboard
+You can override the default accounts with:
 
----
+```env
+DEMO_ADMIN_EMAIL=
+DEMO_ADMIN_PASSWORD=
+DEMO_CITIZEN_EMAIL=
+DEMO_CITIZEN_PASSWORD=
+```
 
-## Key Points
+## Recommended Demo Setup
 
-✅ Frontend is served from Vercel's CDN (fast)
-✅ Backend API runs as serverless functions (scales automatically)
-✅ Database queries happen from serverless functions (not exposed to frontend)
-✅ auto-deploys on every push to main
-✅ Preview deployments for team testing on PRs
-✅ Environment variables secure (not in code)
+For the hackathon, use this split:
 
----
+1. Deploy the public marketing site to Vercel.
+2. Run `pnpm dev` locally for the live portal/admin walkthrough.
+3. Run `pnpm demo:seed` shortly before judging.
+4. Verify the citizen and admin logins with the seeded accounts.
 
-## Next Steps
+## Verification
 
-1. Get Supabase credentials (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
-2. Generate JWT_SECRET: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
-3. Push code: `git push origin main`
-4. Deploy on Vercel dashboard
-5. Add environment variables
-6. Click Deploy
-7. Share URL with team! 🚀
+Before demoing, confirm:
 
----
+```bash
+pnpm check
+pnpm build
+pnpm demo:seed
+```
 
-## Questions?
+Then verify:
 
-For Vercel-specific issues: [Vercel Docs](https://vercel.com/docs)
-For Supabase issues: [Supabase Docs](https://supabase.com/docs)
-For tRPC issues: [tRPC Docs](https://trpc.io/docs)
+- `/news`
+- `/publications`
+- `/consultations`
+- `/contact`
+- `/portal/login`
+- `/portal/dashboard`
+- `/admin/login`
+- `/admin/dashboard`

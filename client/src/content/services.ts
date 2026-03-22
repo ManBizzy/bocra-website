@@ -1,0 +1,397 @@
+import { PORTAL_LOGIN_URL } from '@/const';
+import {
+  FEATURED_RESOURCE_SLUGS,
+  LICENCE_REGISTER_URL,
+  PORTAL_COMPLAINT_URL,
+  PORTAL_LICENCE_VERIFICATION_URL,
+  STATISTICS_URL,
+  getPublicationResourceUrl,
+} from './internalResources';
+
+export type ServiceAccent = 'teal' | 'forest' | 'maroon' | 'gold';
+
+export interface ServiceChannel {
+  label: string;
+  href: string;
+  description: string;
+  external?: boolean;
+}
+
+export interface ServiceArea {
+  slug: string;
+  title: string;
+  eyebrow: string;
+  icon: string;
+  accent: ServiceAccent;
+  summary: string;
+  description: string;
+  responsibilities: string[];
+  useCases: string[];
+  channels: ServiceChannel[];
+}
+
+export const SERVICE_AREAS: ServiceArea[] = [
+  {
+    slug: 'spectrum',
+    title: 'Spectrum Management',
+    eyebrow: 'Telecommunications',
+    icon: 'Radio',
+    accent: 'teal',
+    summary:
+      "Planning and managing Botswana's radio frequency resources, assignments, standards, and equipment conformity.",
+    description:
+      'BOCRA manages the national radio frequency plan, allocates spectrum, monitors occupancy, and works to avoid harmful interference. The same service area also oversees equipment type approval so radio and telecommunications devices used in Botswana align with applicable technical standards.',
+    responsibilities: [
+      'National radio frequency planning and coordination',
+      'Frequency allocation, assignment, and apparatus licensing support',
+      'Interference prevention, monitoring, and technical standards',
+      'Type approval for radio and telecommunications equipment',
+    ],
+    useCases: [
+      'When an operator needs radio frequency resources or planning guidance',
+      'When equipment needs approval before being connected or used locally',
+      'When stakeholders need formal spectrum-planning and standards references',
+    ],
+    channels: [
+      {
+        label: 'Type Approval Database',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.typeApprovalDatabase
+        ),
+        description:
+          'Open the mirrored type-approval database directly on this site.',
+        external: false,
+      },
+      {
+        label: 'Type Approval Guidelines',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.typeApprovalGuidelines
+        ),
+        description:
+          'Review BOCRA type-approval guidance in the site viewer.',
+        external: false,
+      },
+      {
+        label: 'Spectrum Licensing Policy',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.spectrumLicensingPolicy
+        ),
+        description:
+          'Review the mirrored spectrum licensing and pricing policy on this site.',
+        external: false,
+      },
+    ],
+  },
+  {
+    slug: 'licensing',
+    title: 'Licensing',
+    eyebrow: 'Market Entry',
+    icon: 'FileCheck',
+    accent: 'forest',
+    summary:
+      'Application, issuance, and framework guidance for broadcasting, telecommunications, internet, postal, and radio communications licences.',
+    description:
+      'BOCRA processes licence and permit applications across the regulated communications sectors. The licensing framework supports converged services, technology-neutral market participation, and formal authorisations for providers operating in Botswana.',
+    responsibilities: [
+      'Processing licence, permit, and authority applications',
+      'Maintaining the licensing framework for regulated communications sectors',
+      'Supporting market entry for telecommunications and broadcasting operators',
+      'Providing licence verification and operator-facing service channels',
+    ],
+    useCases: [
+      'When a provider is preparing a new licence or permit application',
+      'When stakeholders need to understand the licensing framework',
+      'When a licence or operator status needs verification',
+    ],
+    channels: [
+      {
+        label: 'Licence Verification Portal',
+        href: PORTAL_LICENCE_VERIFICATION_URL,
+        description:
+          'Sign in and verify published licence holders without leaving this site.',
+        external: false,
+      },
+      {
+        label: 'Licence Register',
+        href: LICENCE_REGISTER_URL,
+        description:
+          'Search BOCRA licence holders, broadcasting stations, and postal operators on this site.',
+        external: false,
+      },
+      {
+        label: 'Licensing Framework',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.licensingFramework
+        ),
+        description:
+          'Review the mirrored BOCRA licensing framework on this site.',
+        external: false,
+      },
+    ],
+  },
+  {
+    slug: 'complaints',
+    title: 'Consumer Complaints',
+    eyebrow: 'Consumer Protection',
+    icon: 'MessageSquare',
+    accent: 'maroon',
+    summary:
+      'Complaint intake, escalation guidance, and consumer protection support when communications services do not meet expected standards.',
+    description:
+      'BOCRA investigates consumer complaints against service providers where there is sufficient evidence to establish a prima facie case. This service area covers complaint filing, complaint-handling guidance, and quality-of-service references for consumers and regulated providers.',
+    responsibilities: [
+      'Complaint intake and escalation against service providers',
+      'Complaint-handling guidance for consumers and operators',
+      'Quality-of-service reference material and service expectations',
+      'Consumer protection support when provider channels are exhausted',
+    ],
+    useCases: [
+      'When a service provider has not resolved a consumer complaint',
+      'When a user needs the formal BOCRA complaint process',
+      'When teams need complaint-handling or quality-of-service guidance',
+    ],
+    channels: [
+      {
+        label: 'File a Complaint',
+        href: PORTAL_COMPLAINT_URL,
+        description:
+          'Sign in, file a complaint, and track its status directly in the BOCRA portal.',
+        external: false,
+      },
+      {
+        label: 'Complaints Handling Procedure',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.complaintsHandlingProcedure
+        ),
+        description:
+          'Review the mirrored complaint-handling procedure on this site.',
+        external: false,
+      },
+      {
+        label: 'Quality of Service Guidelines',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.qualityOfServiceGuidelines
+        ),
+        description:
+          'Check the latest mirrored ICT quality-of-service guidelines on this site.',
+        external: false,
+      },
+    ],
+  },
+  {
+    slug: 'domain-registry',
+    title: 'Domain Registry (.bw)',
+    eyebrow: 'Internet Governance',
+    icon: 'Globe',
+    accent: 'gold',
+    summary:
+      'Public guidance on .bw administration, policy, and the official external registry workflow.',
+    description:
+      'BOCRA manages and oversees the .bw ccTLD as a national resource. This page is informational: it explains BOCRA policy and routes visitors to the official external registry website for live registration or domain-management actions.',
+    responsibilities: [
+      'Administering the .bw ccTLD and its second-level domains',
+      'Maintaining operational stability and utility of the .bw namespace',
+      'Providing policy guidance for registration and acceptable use',
+      'Directing registrants to the official external .bw registry workflow',
+    ],
+    useCases: [
+      'When a registrant needs BOCRA guidance before using the external .bw registry',
+      'When a registrant needs to open the live nic.net.bw registration workflow',
+      'When stakeholders need .bw policy or terms-and-conditions documents',
+      'When teams need BOCRA support on ccTLD governance questions',
+    ],
+    channels: [
+      {
+        label: 'Open nic.net.bw',
+        href: 'https://nic.net.bw',
+        description:
+          'Use the official external registry website for live .bw registration and management.',
+        external: true,
+      },
+      {
+        label: '.bw Terms and Conditions',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.domainTermsAndConditions
+        ),
+        description:
+          'Review the mirrored .bw registration terms and conditions on this site.',
+        external: false,
+      },
+      {
+        label: 'Contact BOCRA',
+        href: '/contact',
+        description:
+          'Use the BOCRA contact page for policy questions that still need manual support.',
+        external: false,
+      },
+    ],
+  },
+  {
+    slug: 'broadcasting',
+    title: 'Broadcasting Regulation',
+    eyebrow: 'Broadcasting',
+    icon: 'Tv',
+    accent: 'teal',
+    summary:
+      'Regulation of broadcasting, subscription management, re-broadcasting activities, and related licence compliance.',
+    description:
+      'BOCRA regulates broadcasting services in Botswana, including subscription management services and re-broadcasting activities outside state broadcasting. This service area covers regulatory expectations, licence obligations, and guidance for broadcasting operators and stakeholders.',
+    responsibilities: [
+      'Broadcasting and re-broadcasting regulatory oversight',
+      'Broadcasting licence guidance and regulatory references',
+      'Content and local-content compliance expectations',
+      'Operator-facing documents for broadcast-sector requirements',
+    ],
+    useCases: [
+      'When a broadcaster needs regulatory or licence guidance',
+      'When a stakeholder needs the broadcasting regulations or sector overview',
+      'When teams need published broadcasting obligations and references',
+    ],
+    channels: [
+      {
+        label: 'Audience Survey Report',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.broadcastingAudienceSurvey
+        ),
+        description:
+          'Open the mirrored NBB audience survey report directly on this site.',
+        external: false,
+      },
+      {
+        label: 'Broadcasting Regulation',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.broadcastingRegulation
+        ),
+        description:
+          'Open the mirrored broadcasting regulation reference on this site.',
+        external: false,
+      },
+      {
+        label: 'Broadcasting Licence Procedure',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.broadcastingLicenceProcedure
+        ),
+        description:
+          'Access the mirrored broadcasting licence application procedure on this site.',
+        external: false,
+      },
+    ],
+  },
+  {
+    slug: 'cybersecurity',
+    title: 'Cybersecurity Advisory',
+    eyebrow: 'Security and Trust',
+    icon: 'Shield',
+    accent: 'forest',
+    summary:
+      'Communications-sector cybersecurity coordination, digital trust services, and public security reference material.',
+    description:
+      "BOCRA hosts the communications-sector CIRT function and also carries responsibilities under Botswana's electronic transactions and electronic evidence framework. This service area is the right entry point for cybersecurity guidance, digital trust references, and sector-level response coordination context.",
+    responsibilities: [
+      'Communications-sector cybersecurity focal-point coordination',
+      'bw CIRT guidance and reference material',
+      'Electronic communications transactions and trust-service oversight',
+      'Electronic evidence certification references and related standards',
+    ],
+    useCases: [
+      'When organisations need communications-sector cybersecurity guidance',
+      'When teams need digital trust, electronic transactions, or evidence references',
+      "When stakeholders need BOCRA's published cybersecurity and CIRT context",
+    ],
+    channels: [
+      {
+        label: 'National Cybersecurity Strategy',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.cybersecurityStrategy
+        ),
+        description:
+          'Review Botswana’s mirrored national cybersecurity strategy on this site.',
+        external: false,
+      },
+      {
+        label: 'Cybersecurity Act, 2025',
+        href: getPublicationResourceUrl(FEATURED_RESOURCE_SLUGS.cybersecurityAct),
+        description:
+          'Open the mirrored Cybersecurity Act, 2025 without leaving this site.',
+        external: false,
+      },
+      {
+        label: 'Electronic Transactions Act',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.electronicTransactionsAct
+        ),
+        description:
+          'Use the mirrored electronic transactions legislation as the core legal reference.',
+        external: false,
+      },
+    ],
+  },
+];
+
+export const SERVICE_PORTALS = [
+  {
+    label: 'BOCRA Portal',
+    href: PORTAL_LOGIN_URL,
+    description: 'Use the new BOCRA portal for sign-in, complaints, and tracking',
+    external: false,
+  },
+  {
+    label: 'Licence Verification',
+    href: PORTAL_LICENCE_VERIFICATION_URL,
+    description:
+      'Sign in and search the mirrored licence register inside the new portal',
+    external: false,
+  },
+  {
+    label: 'Telecoms Statistics',
+    href: STATISTICS_URL,
+    description:
+      'View KPI trends, broadband facts, and mirrored sector reports on this site',
+    external: false,
+  },
+  {
+    label: 'Register BW',
+    href: 'https://nic.net.bw',
+    description: 'Live .bw registration and registry access',
+    external: true,
+  },
+] as const;
+
+export function getServiceAreaBySlug(slug: string) {
+  return SERVICE_AREAS.find((service) => service.slug === slug);
+}
+
+export function getAccentClasses(accent: ServiceAccent) {
+  switch (accent) {
+    case 'forest':
+      return {
+        text: 'text-bocra-forest-green',
+        soft: 'bg-bocra-forest-green/10 text-bocra-forest-green',
+        border: 'border-bocra-forest-green',
+        button: 'bg-bocra-forest-green text-white hover:bg-bocra-forest-green/90',
+      };
+    case 'maroon':
+      return {
+        text: 'text-bocra-dark-maroon',
+        soft: 'bg-bocra-dark-maroon/10 text-bocra-dark-maroon',
+        border: 'border-bocra-dark-maroon',
+        button: 'bg-bocra-dark-maroon text-white hover:bg-bocra-dark-maroon/90',
+      };
+    case 'gold':
+      return {
+        text: 'text-bocra-deep-teal',
+        soft: 'bg-bocra-golden-yellow/25 text-bocra-deep-teal',
+        border: 'border-bocra-golden-yellow',
+        button:
+          'bg-bocra-golden-yellow text-bocra-text-primary hover:bg-bocra-golden-yellow/90',
+      };
+    case 'teal':
+    default:
+      return {
+        text: 'text-bocra-teal',
+        soft: 'bg-bocra-teal/10 text-bocra-teal',
+        border: 'border-bocra-teal',
+        button: 'bg-bocra-teal text-white hover:bg-bocra-teal/90',
+      };
+  }
+}

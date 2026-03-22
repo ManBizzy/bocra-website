@@ -11,13 +11,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Lazy load pages
 const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About"));
+const BoardOfDirectors = lazy(() => import("./pages/BoardOfDirectors"));
+const ExecutiveManagement = lazy(() => import("./pages/ExecutiveManagement"));
 const Services = lazy(() => import("./pages/Services"));
-const Licensing = lazy(() => import("./pages/Licensing"));
-const Complaints = lazy(() => import("./pages/Complaints"));
-const DomainRegistry = lazy(() => import("./pages/DomainRegistry"));
+const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
+const Consultations = lazy(() => import("./pages/Consultations"));
+const ConsultationDetail = lazy(() => import("./pages/ConsultationDetail"));
 const News = lazy(() => import("./pages/News"));
 const NewsArticle = lazy(() => import("./pages/NewsArticle"));
 const Publications = lazy(() => import("./pages/Publications"));
+const PublicationResource = lazy(() => import("./pages/PublicationResource"));
+const LicensingRegister = lazy(() => import("./pages/LicensingRegister"));
+const Statistics = lazy(() => import("./pages/Statistics"));
 const Contact = lazy(() => import("./pages/Contact"));
 const PortalLogin = lazy(() => import("./pages/portal/Login"));
 const PortalDashboard = lazy(() => import("./pages/portal/Dashboard"));
@@ -71,6 +76,26 @@ function Router() {
         )}
       </Route>
 
+      <Route path={"/board-of-directors"}>
+        {() => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <BoardOfDirectors />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/executive-management"}>
+        {() => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <ExecutiveManagement />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
       <Route path={"/services"}>
         {() => (
           <PublicLayout>
@@ -85,7 +110,7 @@ function Router() {
         {() => (
           <PublicLayout>
             <Suspense fallback={<LoadingFallback />}>
-              <Licensing />
+              <ServiceDetail slug="licensing" />
             </Suspense>
           </PublicLayout>
         )}
@@ -95,7 +120,7 @@ function Router() {
         {() => (
           <PublicLayout>
             <Suspense fallback={<LoadingFallback />}>
-              <Complaints />
+              <ServiceDetail slug="complaints" />
             </Suspense>
           </PublicLayout>
         )}
@@ -105,7 +130,37 @@ function Router() {
         {() => (
           <PublicLayout>
             <Suspense fallback={<LoadingFallback />}>
-              <DomainRegistry />
+              <ServiceDetail slug="domain-registry" />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/services/:slug"}>
+        {({ slug }) => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <ServiceDetail slug={slug} />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/consultations"}>
+        {() => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <Consultations />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/consultations/:id"}>
+        {({ id }) => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <ConsultationDetail id={id} />
             </Suspense>
           </PublicLayout>
         )}
@@ -136,6 +191,36 @@ function Router() {
           <PublicLayout>
             <Suspense fallback={<LoadingFallback />}>
               <Publications />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/resources/:slug"}>
+        {({ slug }) => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <PublicationResource slug={slug} />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/licensing/register"}>
+        {() => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <LicensingRegister />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/statistics"}>
+        {() => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <Statistics />
             </Suspense>
           </PublicLayout>
         )}

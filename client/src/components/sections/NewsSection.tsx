@@ -207,7 +207,7 @@ export default function NewsSection() {
                   <div className="p-6 flex-1 flex flex-col">
                     {/* Category Badge */}
                     {category && (
-                      <span className={`inline-block w-fit px-3 py-1 rounded-full text-xs font-semibold text-white ${category.color} mb-3`}>
+                      <span className={`inline-block w-fit px-3 py-1 rounded-full text-xs font-semibold ${category.color} mb-3`}>
                         {category.label}
                       </span>
                     )}

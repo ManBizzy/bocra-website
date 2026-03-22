@@ -1,8 +1,15 @@
-import { Mail, Phone, MapPin } from 'lucide-react';
-import { SITE_FULL_NAME } from '@/const';
+import { Facebook, Linkedin, Mail, MapPin, Phone, Twitter, Youtube } from 'lucide-react';
+import { CONTACT_DETAILS, SITE_FULL_NAME, SOCIAL_LINKS } from '@/const';
+import BrandLogo from '@/components/branding/BrandLogo';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const socialIcons = {
+    Facebook,
+    LinkedIn: Linkedin,
+    YouTube: Youtube,
+    X: Twitter,
+  } as const;
 
   return (
     <footer className="bg-bocra-deep-teal text-white">
@@ -11,15 +18,30 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* About Section */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-bocra-golden-yellow rounded-lg flex items-center justify-center text-bocra-deep-teal font-bold text-sm">
-                B
-              </div>
-              <span className="font-semibold">BOCRA</span>
+            <div className="mb-4">
+              <BrandLogo framed imageClassName="h-10" />
             </div>
             <p className="text-sm text-white/80 leading-relaxed">
               {SITE_FULL_NAME} regulates telecommunications, broadcasting, postal, and internet services in Botswana.
             </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              {SOCIAL_LINKS.map((link) => {
+                const Icon = socialIcons[link.label];
+
+                return (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={link.label}
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/80 transition-colors hover:border-bocra-golden-yellow hover:text-bocra-golden-yellow"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </a>
+                );
+              })}
+            </div>
           </div>
 
           {/* Quick Links */}
@@ -54,17 +76,17 @@ export default function Footer() {
             <h3 className="font-semibold mb-4">Services</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="/licensing" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
+                <a href="/services/licensing" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
                   Licensing
                 </a>
               </li>
               <li>
-                <a href="/complaints" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
+                <a href="/services/complaints" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
                   File Complaint
                 </a>
               </li>
               <li>
-                <a href="/domain-registry" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
+                <a href="/services/domain-registry" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
                   Domain Registry
                 </a>
               </li>
@@ -82,18 +104,22 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0 text-bocra-golden-yellow" />
-                <span className="text-white/80">Gaborone, Botswana</span>
+                <span className="text-white/80">
+                  {CONTACT_DETAILS.addressLines[0]}
+                  <br />
+                  {CONTACT_DETAILS.addressLines[1]}
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <Phone className="w-4 h-4 mt-0.5 flex-shrink-0 text-bocra-golden-yellow" />
-                <a href="tel:+267" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
-                  +267 (0) 395 1000
+                <a href={CONTACT_DETAILS.phoneHref} className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
+                  {CONTACT_DETAILS.phoneDisplay}
                 </a>
               </li>
               <li className="flex items-start gap-2">
                 <Mail className="w-4 h-4 mt-0.5 flex-shrink-0 text-bocra-golden-yellow" />
-                <a href="mailto:info@bocra.org.bw" className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
-                  info@bocra.org.bw
+                <a href={CONTACT_DETAILS.emailHref} className="text-white/80 hover:text-bocra-golden-yellow transition-colors">
+                  {CONTACT_DETAILS.email}
                 </a>
               </li>
             </ul>
@@ -105,17 +131,9 @@ export default function Footer() {
           {/* Bottom Footer */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/70">
             <p>&copy; {currentYear} BOCRA. All rights reserved.</p>
-            <div className="flex items-center gap-6">
-              <a href="#" className="hover:text-bocra-golden-yellow transition-colors">
-                Privacy Policy
-              </a>
-              <a href="#" className="hover:text-bocra-golden-yellow transition-colors">
-                Terms of Service
-              </a>
-              <a href="#" className="hover:text-bocra-golden-yellow transition-colors">
-                Accessibility
-              </a>
-            </div>
+            <p className="text-center md:text-right">
+              Public guidance, publications, and contact routes for BOCRA services.
+            </p>
           </div>
         </div>
       </div>

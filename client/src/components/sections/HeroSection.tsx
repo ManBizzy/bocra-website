@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { HOMEPAGE_STATS } from '@/const';
+import { getLoginUrl, HOMEPAGE_STATS } from '@/const';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -23,105 +24,140 @@ const itemVariants = {
 };
 
 export default function HeroSection() {
+  const [showScrollCue, setShowScrollCue] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 24) {
+        setShowScrollCue(false);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <section
-      className="relative w-full h-screen md:h-[85vh] flex items-center justify-center overflow-hidden"
+      className="relative flex h-screen w-full items-center justify-center overflow-hidden md:h-[85vh]"
       style={{
-        background: `linear-gradient(135deg, rgba(48, 182, 207, 0.9) 0%, rgba(45, 106, 45, 0.9) 100%), 
+        background: `linear-gradient(135deg, rgba(15, 79, 75, 0.9) 0%, rgba(27, 127, 121, 0.9) 100%),
                      repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px)`,
       }}
     >
-      {/* Animated background shapes */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 20, repeat: Infinity, repeatType: 'loop' }}
-          className="absolute -top-1/2 -right-1/2 w-full h-full opacity-10"
+          className="absolute -right-1/2 -top-1/2 h-full w-full opacity-10"
         >
-          <div className="w-96 h-96 bg-bocra-golden-yellow rounded-full blur-3xl" />
+          <div className="h-96 w-96 rounded-full bg-bocra-golden-yellow blur-3xl" />
         </motion.div>
       </div>
 
-      {/* Content */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="relative z-10 container text-center text-white max-w-3xl"
+        className="relative z-10 container max-w-3xl text-center text-white"
       >
-        {/* Badge */}
         <motion.div variants={itemVariants} className="mb-6">
-          <div className="inline-block px-4 py-2 rounded-full bg-white/15 backdrop-blur-sm border border-white/20">
-            <span className="text-xs font-medium text-white">Botswana's Communications Regulator</span>
+          <div className="inline-block rounded-full border border-white/20 bg-white/15 px-4 py-2 backdrop-blur-sm">
+            <span className="text-xs font-medium text-white">
+              Botswana&apos;s Communications Regulator
+            </span>
           </div>
         </motion.div>
 
-        {/* Headline */}
         <motion.h1
           variants={itemVariants}
-          className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
+          className="mb-6 text-4xl font-bold leading-tight md:text-5xl lg:text-6xl"
         >
           Connecting Botswana. Protecting Citizens. Regulating the Future.
         </motion.h1>
 
-        {/* Subheading */}
         <motion.p
           variants={itemVariants}
-          className="text-lg md:text-xl text-white/85 mb-8 leading-relaxed max-w-2xl mx-auto"
+          className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-white/85 md:text-xl"
         >
-          BOCRA is mandated to regulate telecommunications, broadcasting, postal, and internet services in Botswana in the public interest — making communications accessible, fair, and secure for every citizen.
+          BOCRA is mandated to regulate telecommunications, broadcasting,
+          postal, and internet services in Botswana in the public interest,
+          making communications accessible, fair, and secure for every
+          citizen.
         </motion.p>
 
-        {/* CTA Buttons */}
-        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+        <motion.div
+          variants={itemVariants}
+          className="mb-12 flex flex-col items-center justify-center gap-4 sm:flex-row"
+        >
           <Button
-            className="bg-white text-bocra-internet hover:bg-white/90 font-semibold px-8 py-6 text-base"
-            onClick={() => (window.location.href = '/complaints')}
+            className="bg-white px-8 py-6 text-base font-semibold text-bocra-teal hover:bg-white/90"
+            onClick={() =>
+              (window.location.href = `${getLoginUrl()}?next=${encodeURIComponent(
+                '/portal/dashboard#file-complaint'
+              )}`)
+            }
           >
             File a Complaint
           </Button>
           <Button
             variant="outline"
-            className="border-white text-white hover:bg-white/10 font-semibold px-8 py-6 text-base"
-            onClick={() => (window.location.href = '/licensing')}
+            className="border-white px-8 py-6 text-base font-semibold text-white hover:bg-white/10"
+            onClick={() => (window.location.href = '/services/licensing')}
           >
-            Apply for Licence
+            Licensing Guidance
           </Button>
         </motion.div>
 
-        {/* Stats */}
         <motion.div
           variants={itemVariants}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
+          className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6"
         >
           {HOMEPAGE_STATS.map((stat, index) => (
             <motion.div
               key={index}
               whileHover={{ scale: 1.05 }}
-              className="p-4 md:p-6 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-colors"
+              className="rounded-xl border border-white/20 bg-white/10 p-4 backdrop-blur-sm transition-colors hover:bg-white/15 md:p-6"
             >
-              <div className="text-2xl md:text-3xl font-bold text-bocra-golden-yellow mb-2">
+              <div className="mb-2 text-2xl font-bold text-bocra-golden-yellow md:text-3xl">
                 {stat.value}
               </div>
-              <div className="text-xs md:text-sm text-white/80">{stat.label}</div>
+              <div className="text-xs text-white/80 md:text-sm">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>
       </motion.div>
 
-      {/* Scroll indicator */}
       <motion.div
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
+        animate={{
+          y: showScrollCue ? [0, 10, 0] : 0,
+          opacity: showScrollCue ? 1 : 0,
+        }}
+        transition={
+          showScrollCue
+            ? {
+                y: { duration: 2, repeat: Infinity },
+                opacity: { duration: 0.35, ease: 'easeOut' },
+              }
+            : {
+                opacity: { duration: 0.35, ease: 'easeOut' },
+              }
+        }
+        className={`absolute bottom-8 left-1/2 z-10 -translate-x-1/2 transform ${
+          showScrollCue ? '' : 'pointer-events-none'
+        }`}
       >
         <div className="flex flex-col items-center gap-2">
           <span className="text-xs text-white/60">Scroll to explore</span>
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
+          <div className="flex h-10 w-6 items-start justify-center rounded-full border-2 border-white/30 p-2">
             <motion.div
               animate={{ y: [0, 6, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="w-1 h-2 bg-white/60 rounded-full"
+              className="h-2 w-1 rounded-full bg-white/60"
             />
           </div>
         </div>

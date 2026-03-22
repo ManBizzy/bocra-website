@@ -1,20 +1,27 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'wouter';
 import { Menu, X, Search } from 'lucide-react';
-import { NAV_LINKS, getLoginUrl, ADMIN_LOGIN_URL } from '@/const';
+import {
+  NAV_LINKS,
+  CITIZEN_PORTAL_URL,
+  getLoginUrl,
+  ADMIN_DASHBOARD_URL,
+} from '@/const';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
+import BrandLogo from '@/components/branding/BrandLogo';
+import SiteSearch from '@/components/layout/SiteSearch';
 
 export default function Header() {
   const [location] = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const drawerRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
+  const portalUrl = user ? CITIZEN_PORTAL_URL : getLoginUrl();
+  const adminUrl = ADMIN_DASHBOARD_URL;
 
   // Handle scroll shadow
   useEffect(() => {
@@ -75,38 +82,7 @@ export default function Header() {
 
   return (
     <>
-      {/* Search Overlay */}
-      <AnimatePresence>
-        {isSearchOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 top-16 z-40 bg-white border-b border-bocra-border"
-          >
-            <div className="container py-6">
-              <div className="flex items-center gap-4">
-                <Input
-                  type="search"
-                  placeholder="Search for licences, news, services..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1"
-                  autoFocus
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsSearchOpen(false)}
-                  aria-label="Close search"
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <SiteSearch open={isSearchOpen} onOpenChange={setIsSearchOpen} />
 
       {/* Mobile Drawer Overlay */}
       <AnimatePresence>
@@ -170,18 +146,18 @@ export default function Header() {
               <Button
                 className="w-full bg-bocra-teal hover:bg-bocra-teal/90 text-white"
                 onClick={() => {
-                  window.location.href = getLoginUrl();
+                  window.location.href = portalUrl;
                   setIsMobileMenuOpen(false);
                 }}
               >
-                Citizen Portal
+                Open Portal
               </Button>
               {user?.role === 'admin' && (
                 <Button
                   variant="outline"
                   className="w-full"
                   onClick={() => {
-                    window.location.href = ADMIN_LOGIN_URL;
+                    window.location.href = adminUrl;
                     setIsMobileMenuOpen(false);
                   }}
                 >
@@ -202,14 +178,9 @@ export default function Header() {
         <div className="container py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2 flex-shrink-0">
-              <div className="w-10 h-10 bg-bocra-teal rounded-lg flex items-center justify-center text-white font-bold">
-                B
-              </div>
-              <div className="hidden sm:block">
-                <div className="text-sm font-semibold text-bocra-text-primary">BOCRA</div>
-                <div className="text-xs text-bocra-text-muted">Botswana Communications</div>
-              </div>
+            <a href="/" className="flex flex-shrink-0 items-center" aria-label="BOCRA home">
+              <BrandLogo imageClassName="h-10 sm:h-11" />
+              <span className="sr-only">Botswana Communications Regulatory Authority</span>
             </a>
 
             {/* Desktop Navigation */}
@@ -239,7 +210,7 @@ export default function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                onClick={() => setIsSearchOpen(true)}
                 aria-label="Open search"
                 className="text-bocra-text-secondary hover:text-bocra-teal"
               >
@@ -249,18 +220,19 @@ export default function Header() {
               {/* Desktop Portal Button */}
               <Button
                 className="hidden sm:inline-flex bg-bocra-teal hover:bg-bocra-teal/90 text-white"
-                onClick={() => (window.location.href = getLoginUrl())}
+                onClick={() => (window.location.href = portalUrl)}
               >
-                Citizen Portal
+                Portal
               </Button>
 
-              {/* Admin Link */}
-              <a
-                href={ADMIN_LOGIN_URL}
-                className="hidden lg:inline-block text-xs text-bocra-text-muted hover:text-bocra-teal transition-colors"
-              >
-                Admin
-              </a>
+              {user?.role === 'admin' && (
+                <a
+                  href={adminUrl}
+                  className="hidden lg:inline-block text-xs text-bocra-text-muted hover:text-bocra-teal transition-colors"
+                >
+                  Admin
+                </a>
+              )}
 
               {/* Mobile Menu Button */}
               <Button

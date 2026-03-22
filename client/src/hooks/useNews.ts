@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { fetchNews, fetchNewsBySlug } from '@/lib/supabase';
 import type { News } from '@/types';
 
-export function useNews(limit = 3) {
+export function useNews(limit?: number) {
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

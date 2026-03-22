@@ -1,434 +1,463 @@
+import { useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useState, useMemo } from 'react';
-import { Search, Filter, Download, Calendar, FileText, FileCheck, BarChart3, BookOpen, X } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import {
+  ArrowUpRight,
+  BookOpen,
+  CalendarDays,
+  Download,
+  FileSpreadsheet,
+  FileText,
+  Search,
+} from 'lucide-react';
+import { format } from 'date-fns';
+import { SITE_DESCRIPTION } from '@/const';
+import { usePublications } from '@/hooks/usePublications';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { formatDistanceToNow } from 'date-fns';
+import { Card } from '@/components/ui/card';
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/components/ui/empty';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
+import type { Publication } from '@/types';
 
-// Publication categories
-const PUBLICATION_CATEGORIES = {
-  reports: { label: 'Reports', color: 'bg-bocra-teal', icon: BarChart3 },
-  guidelines: { label: 'Guidelines', color: 'bg-bocra-forest-green', icon: BookOpen },
-  policy: { label: 'Policy Documents', color: 'bg-bocra-dark-maroon', icon: FileCheck },
-  research: { label: 'Research', color: 'bg-blue-600', icon: BookOpen },
-  annual: { label: 'Annual Reports', color: 'bg-purple-600', icon: BarChart3 },
+const FILE_TYPE_META: Record<
+  Publication['file_type'],
+  { label: string; badge: string; icon: typeof FileText }
+> = {
+  pdf: {
+    label: 'PDF',
+    badge: 'border-transparent bg-bocra-dark-maroon text-white',
+    icon: FileText,
+  },
+  doc: {
+    label: 'DOC',
+    badge: 'border-transparent bg-bocra-teal text-white',
+    icon: FileText,
+  },
+  docx: {
+    label: 'DOCX',
+    badge: 'border-transparent bg-bocra-teal text-white',
+    icon: FileText,
+  },
+  xlsx: {
+    label: 'XLSX',
+    badge: 'border-transparent bg-bocra-forest-green text-white',
+    icon: FileSpreadsheet,
+  },
+  pptx: {
+    label: 'PPTX',
+    badge: 'border-transparent bg-bocra-golden-yellow text-bocra-text-primary',
+    icon: FileText,
+  },
 };
 
-// Fake publications data
-const FAKE_PUBLICATIONS = [
+const ARCHIVE_LANES = [
   {
-    id: '1',
-    title: 'Annual Report 2025 - BOCRA Performance Review',
-    category: 'annual' as const,
-    description: 'Comprehensive annual report covering BOCRA activities, regulatory decisions, market performance metrics, and financial overview for 2025.',
-    fileType: 'PDF',
-    fileSize: '8.2 MB',
-    published_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
-    downloadUrl: '#',
+    title: 'Annual Reports',
+    description:
+      'Corporate reporting, financial disclosures, and high-level regulatory performance updates.',
   },
   {
-    id: '2',
-    title: 'Digital Service Provider Guidelines 2026',
-    category: 'guidelines' as const,
-    description: 'Complete guidelines for digital service providers including compliance requirements, security standards, and consumer protection measures.',
-    fileType: 'PDF',
-    fileSize: '5.7 MB',
-    published_at: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
-    downloadUrl: '#',
+    title: 'Guidelines',
+    description:
+      'Operational guidance, compliance reference material, and public service information packs.',
   },
   {
-    id: '3',
-    title: 'Mobile Network Coverage Report Q4 2025',
-    category: 'reports' as const,
-    description: 'Detailed analysis of mobile network coverage quality across Botswana, including statistics, trends, and recommendations for improvement.',
-    fileType: 'PDF',
-    fileSize: '6.4 MB',
-    published_at: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
-    downloadUrl: '#',
+    title: 'Consultative Papers',
+    description:
+      'Draft frameworks, discussion papers, and supporting documents for stakeholder review.',
   },
-  {
-    id: '4',
-    title: 'Broadcasting Standards Policy 2026',
-    category: 'policy' as const,
-    description: 'Official policy document outlining broadcasting standards, content requirements, and regulatory obligations for all broadcasters.',
-    fileType: 'PDF',
-    fileSize: '4.3 MB',
-    published_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-    downloadUrl: '#',
-  },
-  {
-    id: '5',
-    title: 'Telecommunications Market Research 2025',
-    category: 'research' as const,
-    description: 'In-depth market research examining telecommunications sector trends, consumer behavior, operator performance, and future growth opportunities.',
-    fileType: 'PDF',
-    fileSize: '12.1 MB',
-    published_at: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000).toISOString(),
-    downloadUrl: '#',
-  },
-  {
-    id: '6',
-    title: 'Spectrum Management Framework Guidelines',
-    category: 'guidelines' as const,
-    description: 'Comprehensive guidelines on spectrum allocation, usage rights, interference management, and compliance procedures.',
-    fileType: 'PDF',
-    fileSize: '7.1 MB',
-    published_at: new Date(Date.now() - 40 * 24 * 60 * 60 * 1000).toISOString(),
-    downloadUrl: '#',
-  },
-  {
-    id: '7',
-    title: 'Consumer Complaints Analysis Report 2025',
-    category: 'reports' as const,
-    description: 'Statistical analysis of consumer complaints received by BOCRA, including trends, common issues, and resolution metrics.',
-    fileType: 'PDF',
-    fileSize: '3.8 MB',
-    published_at: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
-    downloadUrl: '#',
-  },
-  {
-    id: '8',
-    title: 'Data Protection and Privacy Guidelines',
-    category: 'guidelines' as const,
-    description: 'Guidelines for telecommunications operators on data protection, privacy compliance, and consumer data handling requirements.',
-    fileType: 'PDF',
-    fileSize: '4.9 MB',
-    published_at: new Date(Date.now() - 50 * 24 * 60 * 60 * 1000).toISOString(),
-    downloadUrl: '#',
-  },
-  {
-    id: '9',
-    title: 'Digital Economy Research Study',
-    category: 'research' as const,
-    description: 'Research study on Botswana digital economy growth, e-commerce trends, and telecommunications infrastructure impact.',
-    fileType: 'PDF',
-    fileSize: '9.2 MB',
-    published_at: new Date(Date.now() - 55 * 24 * 60 * 60 * 1000).toISOString(),
-    downloadUrl: '#',
-  },
-  {
-    id: '10',
-    title: 'Licensing Policy and Procedures Manual',
-    category: 'policy' as const,
-    description: 'Complete policy manual covering licensing procedures, application requirements, and license renewal processes.',
-    fileType: 'PDF',
-    fileSize: '6.5 MB',
-    published_at: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
-    downloadUrl: '#',
-  },
-  {
-    id: '11',
-    title: '5G Deployment Strategy Document',
-    category: 'policy' as const,
-    description: 'Strategic plan for 5G network deployment in Botswana including timeline, infrastructure requirements, and operator roles.',
-    fileType: 'PDF',
-    fileSize: '5.3 MB',
-    published_at: new Date(Date.now() - 65 * 24 * 60 * 60 * 1000).toISOString(),
-    downloadUrl: '#',
-  },
-  {
-    id: '12',
-    title: 'Annual Report 2024 - BOCRA Review',
-    category: 'annual' as const,
-    description: 'Comprehensive annual report for 2024 detailing BOCRA regulatory activities, market changes, and organizational performance.',
-    fileType: 'PDF',
-    fileSize: '7.8 MB',
-    published_at: new Date(Date.now() - 70 * 24 * 60 * 60 * 1000).toISOString(),
-    downloadUrl: '#',
-  },
-];
+] as const;
+
+function formatCategoryLabel(category: string) {
+  return category
+    .split(/[\s_-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join(' ');
+}
 
 export default function Publications() {
+  const { publications, loading, error } = usePublications();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<'recent' | 'oldest'>('recent');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const [activeCategory, setActiveCategory] = useState('all');
 
-  // Filter and sort publications
+  const categoryOptions = useMemo(() => {
+    const categories = Array.from(
+      new Set(publications.map((publication) => publication.category.trim()))
+    )
+      .filter(Boolean)
+      .sort((left, right) => left.localeCompare(right));
+
+    return [
+      { key: 'all', label: 'All' },
+      ...categories.map((category) => ({
+        key: category,
+        label: formatCategoryLabel(category),
+      })),
+    ];
+  }, [publications]);
+
   const filteredPublications = useMemo(() => {
-    let result = FAKE_PUBLICATIONS;
+    const normalizedQuery = searchQuery.trim().toLowerCase();
 
-    // Apply search filter
-    if (searchQuery) {
-      result = result.filter(
-        (pub) =>
-          pub.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          pub.description.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
+    return publications.filter((publication) => {
+      const matchesCategory =
+        activeCategory === 'all' || publication.category === activeCategory;
+      const matchesSearch =
+        normalizedQuery.length === 0 ||
+        publication.title.toLowerCase().includes(normalizedQuery) ||
+        publication.description.toLowerCase().includes(normalizedQuery) ||
+        publication.category.toLowerCase().includes(normalizedQuery);
 
-    // Apply category filter
-    if (selectedCategory) {
-      result = result.filter((pub) => pub.category === selectedCategory);
-    }
+      return matchesCategory && matchesSearch;
+    });
+  }, [activeCategory, publications, searchQuery]);
 
-    // Apply sorting
-    if (sortBy === 'oldest') {
-      result.sort((a, b) => new Date(a.published_at).getTime() - new Date(b.published_at).getTime());
-    } else {
-      result.sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime());
-    }
-
-    return result;
-  }, [searchQuery, selectedCategory, sortBy]);
-
-  // Paginate results
-  const totalPages = Math.ceil(filteredPublications.length / itemsPerPage);
-  const paginatedPublications = filteredPublications.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  const handleResetFilters = () => {
-    setSearchQuery('');
-    setSelectedCategory(null);
-    setSortBy('recent');
-    setCurrentPage(1);
-  };
-
-  const handleDownload = (title: string) => {
-    alert(`Downloading: ${title}\n\nNote: In production, this would download the actual PDF file.`);
+  const featuredPublication = filteredPublications[0] ?? null;
+  const secondaryPublications = featuredPublication
+    ? filteredPublications.slice(1)
+    : [];
+  const archiveStats = {
+    totalDocuments: publications.length,
+    categories: new Set(publications.map((publication) => publication.category))
+      .size,
+    formats: new Set(publications.map((publication) => publication.file_type))
+      .size,
   };
 
   return (
     <>
       <Helmet>
-        <title>Publications & Documents | BOCRA</title>
-        <meta name="description" content="Download BOCRA publications, reports, guidelines, and policy documents" />
-        <meta property="og:title" content="Publications & Documents | BOCRA" />
-        <meta property="og:description" content="BOCRA publications and regulatory documents" />
+        <title>Publications & Reports | BOCRA</title>
+        <meta
+          name="description"
+          content="Access BOCRA publications, annual reports, guidelines, consultation papers, and regulatory reference documents."
+        />
+        <meta property="og:title" content="Publications & Reports | BOCRA" />
+        <meta
+          property="og:description"
+          content="Access BOCRA publications, annual reports, guidelines, consultation papers, and regulatory reference documents."
+        />
         <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content={`${window.location.origin}/publications`}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="Publications & Reports | BOCRA"
+        />
+        <meta name="twitter:description" content={SITE_DESCRIPTION} />
       </Helmet>
 
-      <div className="w-full">
-        {/* Hero Section */}
-        <section className="w-full bg-gradient-to-r from-bocra-broadcast to-bocra-internet py-16 md:py-20">
-          <div className="container">
-            <h1 className="text-4xl md:text-5xl font-bold text-black mb-4">Publications & Documents</h1>
-            <p className="text-xl text-black/90">Access BOCRA reports, guidelines, and policy documents</p>
+      <div className="bg-bocra-light-grey">
+        <section className="border-b border-bocra-border bg-white">
+          <div className="container py-12 md:py-16">
+            <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+              <div className="max-w-3xl space-y-4">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-bocra-dark-maroon">
+                  Reference Library
+                </p>
+                <h1 className="text-4xl font-bold text-bocra-text-primary md:text-5xl">
+                  Publications & Reports
+                </h1>
+                <p className="text-lg text-bocra-text-secondary">
+                  Browse annual reports, guidelines, consultation documents,
+                  and public reference material published by BOCRA.
+                </p>
+              </div>
+
+              <div className="grid gap-4 rounded-3xl bg-bocra-deep-teal p-6 text-white sm:grid-cols-3">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-white/70">
+                    Documents
+                  </p>
+                  <p className="mt-3 text-3xl font-semibold">
+                    {archiveStats.totalDocuments}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-white/70">
+                    Categories
+                  </p>
+                  <p className="mt-3 text-3xl font-semibold">
+                    {archiveStats.categories}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-white/70">
+                    Formats
+                  </p>
+                  <p className="mt-3 text-3xl font-semibold">
+                    {archiveStats.formats}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Filters Section */}
-        <section className="w-full bg-white border-b border-bocra-light-grey sticky top-16 z-40">
-          <div className="container py-6">
-            {/* Search Bar */}
-            <div className="mb-6">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-bocra-text-muted" />
-                <input
-                  type="text"
-                  placeholder="Search publications..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="w-full pl-12 pr-4 py-3 border border-bocra-light-grey rounded-lg focus:outline-none focus:ring-2 focus:ring-bocra-teal focus:border-transparent"
-                />
-              </div>
+        <section className="container py-8 md:py-10">
+          <div className="mb-6 flex flex-col gap-4">
+            <div className="relative w-full md:max-w-md">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-bocra-text-muted" />
+              <Input
+                type="search"
+                placeholder="Search publications"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                className="pl-10"
+              />
             </div>
 
-            {/* Filter Controls */}
-            <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
-              {/* Category Filter */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <Filter className="w-5 h-5 text-bocra-text-muted" />
-                <span className="text-sm font-medium text-bocra-text-muted">Category:</span>
-                {Object.entries(PUBLICATION_CATEGORIES).map(([key, { label }]) => (
-                  <button
-                    key={key}
-                    onClick={() => {
-                      setSelectedCategory(selectedCategory === key ? null : key);
-                      setCurrentPage(1);
-                    }}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                      selectedCategory === key
-                        ? 'bg-bocra-teal text-white'
-                        : 'bg-bocra-light-grey text-bocra-text-primary hover:bg-bocra-teal/10'
-                    }`}
-                  >
-                    {label}
-                  </button>
+            <div className="flex flex-wrap gap-2">
+              {categoryOptions.map((category) => (
+                <Button
+                  key={category.key}
+                  type="button"
+                  variant={activeCategory === category.key ? 'default' : 'outline'}
+                  className={
+                    activeCategory === category.key
+                      ? 'bg-bocra-dark-maroon text-white hover:bg-bocra-dark-maroon/90'
+                      : ''
+                  }
+                  onClick={() => setActiveCategory(category.key)}
+                >
+                  {category.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="space-y-8">
+              <Skeleton className="h-[320px] w-full" />
+              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {[1, 2, 3].map((item) => (
+                  <Skeleton key={item} className="h-72 w-full" />
                 ))}
               </div>
-
-              {/* Sort Dropdown */}
-              <div className="ml-auto flex items-center gap-2">
-                <label className="text-sm font-medium text-bocra-text-muted">Sort:</label>
-                <select
-                  value={sortBy}
-                  onChange={(e) => {
-                    setSortBy(e.target.value as 'recent' | 'oldest');
-                    setCurrentPage(1);
-                  }}
-                  className="px-4 py-2 border border-bocra-light-grey rounded-lg focus:outline-none focus:ring-2 focus:ring-bocra-teal focus:border-transparent"
-                >
-                  <option value="recent">Most Recent</option>
-                  <option value="oldest">Oldest First</option>
-                </select>
-              </div>
-
-              {/* Reset Button */}
-              {(searchQuery || selectedCategory) && (
-                <button
-                  onClick={handleResetFilters}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-bocra-dark-maroon hover:bg-bocra-light-grey rounded-lg transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                  Reset
-                </button>
-              )}
             </div>
-          </div>
-        </section>
-
-        {/* Results Count */}
-        <section className="w-full bg-bocra-light-grey py-4">
-          <div className="container">
-            <p className="text-sm text-bocra-text-secondary">
-              Showing {paginatedPublications.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}–
-              {Math.min(currentPage * itemsPerPage, filteredPublications.length)} of {filteredPublications.length} documents
-            </p>
-          </div>
-        </section>
-
-        {/* Publications Grid */}
-        <section className="w-full bg-white py-12 md:py-16">
-          <div className="container">
-            {paginatedPublications.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                  {paginatedPublications.map((publication) => {
-                    const category = PUBLICATION_CATEGORIES[publication.category as keyof typeof PUBLICATION_CATEGORIES];
-                    const publishedDate = new Date(publication.published_at);
-                    const CategoryIcon = category?.icon || FileText;
-
-                    return (
-                      <Card key={publication.id} className="flex flex-col hover:shadow-lg transition-shadow overflow-hidden group">
-                        <div className="p-6 flex-1 flex flex-col">
-                          {/* Category Badge */}
-                          {category && (
-                            <span className={`inline-block w-fit px-3 py-1 rounded-full text-xs font-semibold text-white ${category.color} mb-3`}>
-                              {category.label}
-                            </span>
-                          )}
-
-                          {/* Title */}
-                          <h3 className="font-semibold text-lg text-bocra-text-primary mb-3 line-clamp-2 flex-1 group-hover:text-bocra-teal transition-colors">
-                            {publication.title}
-                          </h3>
-
-                          {/* Description */}
-                          <p className="text-bocra-text-secondary text-sm mb-4 line-clamp-2">
-                            {publication.description}
-                          </p>
-
-                          {/* Metadata */}
-                          <div className="space-y-2 mb-4 text-sm text-bocra-text-muted">
-                            <div className="flex items-center justify-between">
-                              <span className="flex items-center gap-2">
-                                <FileCheck className="w-4 h-4" />
-                                {publication.fileType}
-                              </span>
-                              <span>{publication.fileSize}</span>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                              <Calendar className="w-4 h-4" />
-                              <time>{formatDistanceToNow(publishedDate, { addSuffix: true })}</time>
-                            </div>
-                          </div>
-
-                          {/* Download Button */}
-                          <Button
-                            onClick={() => handleDownload(publication.title)}
-                            className="w-full bg-bocra-teal text-white hover:bg-bocra-forest-green transition-colors flex items-center justify-center gap-2 mt-auto"
-                          >
-                            <Download className="w-4 h-4" />
-                            Download
-                          </Button>
-                        </div>
-                      </Card>
-                    );
-                  })}
-                </div>
-
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="flex justify-center items-center gap-2">
-                    <Button
-                      variant="outline"
-                      disabled={currentPage === 1}
-                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                    >
-                      Previous
-                    </Button>
-
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                      <button
-                        key={page}
-                        onClick={() => setCurrentPage(page)}
-                        className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                          currentPage === page
-                            ? 'bg-bocra-teal text-white'
-                            : 'bg-bocra-light-grey text-bocra-text-primary hover:bg-bocra-teal/10'
-                        }`}
+          ) : error ? (
+            <Card className="p-8">
+              <h2 className="text-2xl font-semibold text-bocra-text-primary">
+                Publications are temporarily unavailable
+              </h2>
+              <p className="mt-3 text-bocra-text-secondary">{error}</p>
+            </Card>
+          ) : publications.length === 0 ? (
+            <Card className="border-0 bg-white p-4 shadow-lg sm:p-6 md:p-8">
+              <Empty className="border-bocra-border bg-bocra-light-grey">
+                <EmptyHeader>
+                  <EmptyMedia
+                    variant="icon"
+                    className="bg-bocra-dark-maroon text-white"
+                  >
+                    <BookOpen className="size-5" />
+                  </EmptyMedia>
+                  <EmptyTitle className="text-bocra-text-primary">
+                    The publications archive is being prepared
+                  </EmptyTitle>
+                  <EmptyDescription className="text-bocra-text-secondary">
+                    The page is now wired to Supabase and ready for live
+                    documents. Add publications in Supabase to populate this
+                    archive.
+                  </EmptyDescription>
+                </EmptyHeader>
+                <EmptyContent className="max-w-4xl">
+                  <div className="grid w-full gap-4 md:grid-cols-3">
+                    {ARCHIVE_LANES.map((lane) => (
+                      <div
+                        key={lane.title}
+                        className="rounded-2xl border border-bocra-border bg-white p-5 text-left"
                       >
-                        {page}
-                      </button>
+                        <h3 className="text-base font-semibold text-bocra-text-primary">
+                          {lane.title}
+                        </h3>
+                        <p className="mt-2 text-sm text-bocra-text-secondary">
+                          {lane.description}
+                        </p>
+                      </div>
                     ))}
-
-                    <Button
-                      variant="outline"
-                      disabled={currentPage === totalPages}
-                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                    >
-                      Next
-                    </Button>
                   </div>
-                )}
-              </>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-bocra-text-secondary text-lg mb-4">No publications found</p>
-                <Button variant="outline" onClick={handleResetFilters}>
-                  Clear Filters
-                </Button>
+                </EmptyContent>
+              </Empty>
+            </Card>
+          ) : filteredPublications.length === 0 ? (
+            <Card className="p-8">
+              <h2 className="text-2xl font-semibold text-bocra-text-primary">
+                No publications matched your search
+              </h2>
+              <p className="mt-3 text-bocra-text-secondary">
+                Adjust the search or category filters to find another document.
+              </p>
+            </Card>
+          ) : (
+            <div className="space-y-8">
+              {featuredPublication && (
+                <Card className="overflow-hidden border-0 bg-white shadow-lg">
+                  <div className="grid gap-8 p-8 md:grid-cols-[1.15fr_0.85fr] md:p-10">
+                    <div>
+                      <Badge
+                        variant="outline"
+                        className={FILE_TYPE_META[featuredPublication.file_type].badge}
+                      >
+                        {FILE_TYPE_META[featuredPublication.file_type].label}
+                      </Badge>
+                      <h2 className="mt-5 text-3xl font-bold text-bocra-text-primary md:text-4xl">
+                        {featuredPublication.title}
+                      </h2>
+                      <p className="mt-4 max-w-2xl text-bocra-text-secondary">
+                        {featuredPublication.description}
+                      </p>
+
+                      <div className="mt-6 flex flex-wrap gap-3 text-sm text-bocra-text-muted">
+                        <div className="flex items-center gap-2">
+                          <CalendarDays className="h-4 w-4 text-bocra-dark-maroon" />
+                          <time dateTime={featuredPublication.published_at}>
+                            Published{' '}
+                            {format(
+                              new Date(featuredPublication.published_at),
+                              'dd MMM yyyy'
+                            )}
+                          </time>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <BookOpen className="h-4 w-4 text-bocra-dark-maroon" />
+                          <span>
+                            {formatCategoryLabel(featuredPublication.category)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <a
+                        href={featuredPublication.file_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-8 inline-flex items-center gap-2 rounded-md bg-bocra-dark-maroon px-5 py-3 font-semibold text-white transition-colors hover:bg-bocra-dark-maroon/90"
+                      >
+                        Open Document
+                        <ArrowUpRight className="h-4 w-4" />
+                      </a>
+                    </div>
+
+                    <div className="rounded-2xl bg-bocra-light-grey p-6">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-2xl bg-white p-3 shadow-sm">
+                          {(() => {
+                            const Icon =
+                              FILE_TYPE_META[featuredPublication.file_type].icon;
+                            return (
+                              <Icon className="h-7 w-7 text-bocra-dark-maroon" />
+                            );
+                          })()}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-bocra-text-muted">
+                            Featured document
+                          </p>
+                          <p className="mt-1 text-lg font-semibold text-bocra-text-primary">
+                            Ready for download
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-6 space-y-4 text-sm text-bocra-text-secondary">
+                        <p>
+                          Use the BOCRA publications archive for official
+                          reports, reference documents, and policy material.
+                        </p>
+                        <div className="rounded-2xl bg-white p-4">
+                          <p className="font-medium text-bocra-text-primary">
+                            Archive coverage
+                          </p>
+                          <ul className="mt-3 space-y-2">
+                            {ARCHIVE_LANES.map((lane) => (
+                              <li key={lane.title}>{lane.title}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <a
+                          href={featuredPublication.file_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 font-semibold text-bocra-dark-maroon transition-all hover:gap-3"
+                        >
+                          <Download className="h-4 w-4" />
+                          Download or view publication
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              )}
+
+              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {secondaryPublications.map((publication) => {
+                  const meta = FILE_TYPE_META[publication.file_type];
+                  const Icon = meta.icon;
+
+                  return (
+                    <Card
+                      key={publication.id}
+                      className="flex h-full flex-col bg-white p-6 transition-shadow hover:shadow-lg"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <Badge variant="outline" className={meta.badge}>
+                          {meta.label}
+                        </Badge>
+                        <div className="rounded-2xl bg-bocra-light-grey p-3">
+                          <Icon className="h-5 w-5 text-bocra-dark-maroon" />
+                        </div>
+                      </div>
+
+                      <h3 className="mt-5 text-xl font-semibold text-bocra-text-primary">
+                        {publication.title}
+                      </h3>
+                      <p className="mt-3 flex-1 text-sm text-bocra-text-secondary">
+                        {publication.description}
+                      </p>
+
+                      <div className="mt-5 space-y-3 text-sm text-bocra-text-muted">
+                        <div className="flex items-center gap-2">
+                          <CalendarDays className="h-4 w-4 text-bocra-dark-maroon" />
+                          <time dateTime={publication.published_at}>
+                            {format(
+                              new Date(publication.published_at),
+                              'dd MMM yyyy'
+                            )}
+                          </time>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <BookOpen className="h-4 w-4 text-bocra-dark-maroon" />
+                          <span>{formatCategoryLabel(publication.category)}</span>
+                        </div>
+                      </div>
+
+                      <a
+                        href={publication.file_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-6 inline-flex items-center gap-2 font-semibold text-bocra-dark-maroon transition-all hover:gap-3"
+                      >
+                        Open Publication
+                        <ArrowUpRight className="h-4 w-4" />
+                      </a>
+                    </Card>
+                  );
+                })}
               </div>
-            )}
-          </div>
-        </section>
-
-        {/* Help Section */}
-        <section className="w-full bg-bocra-light-grey py-12 md:py-16">
-          <div className="container">
-            <h2 className="text-3xl font-bold text-bocra-text-primary mb-8">Document Information</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="p-6">
-                <FileText className="w-8 h-8 text-bocra-teal mb-3" />
-                <h3 className="text-lg font-semibold text-bocra-text-primary mb-2">File Types</h3>
-                <p className="text-bocra-text-secondary text-sm">
-                  Most documents are available in PDF format. Contact BOCRA for alternative formats including accessible documents.
-                </p>
-              </Card>
-
-              <Card className="p-6">
-                <Download className="w-8 h-8 text-bocra-teal mb-3" />
-                <h3 className="text-lg font-semibold text-bocra-text-primary mb-2">Download Limit</h3>
-                <p className="text-bocra-text-secondary text-sm">
-                  All documents available for free download. No registration required. Standard download limits apply per day.
-                </p>
-              </Card>
-
-              <Card className="p-6">
-                <BookOpen className="w-8 h-8 text-bocra-teal mb-3" />
-                <h3 className="text-lg font-semibold text-bocra-text-primary mb-2">More Documents</h3>
-                <p className="text-bocra-text-secondary text-sm">
-                  Additional documents and archives available. Contact the BOCRA communications team for specific requests.
-                </p>
-              </Card>
             </div>
-          </div>
+          )}
         </section>
       </div>
     </>

@@ -4,6 +4,7 @@ import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerSupabaseAuthRoutes } from "./supabase-auth";
+import { registerDashboardRoutes } from "./dashboard-routes";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -36,12 +37,9 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // Parse cookies
   app.use(cookieParser());
-  // Supabase auth routes (only if configured)
-  if (process.env.VITE_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    registerSupabaseAuthRoutes(app);
-  } else if (process.env.NODE_ENV === "production") {
-    console.error("Warning: Supabase auth routes not registered - missing environment variables");
-  }
+  // Supabase auth routes
+  registerSupabaseAuthRoutes(app);
+  registerDashboardRoutes(app);
   // tRPC API
   app.use(
     "/api/trpc",
@@ -50,6 +48,9 @@ async function startServer() {
       createContext,
     })
   );
+  app.use("/api", (_req, res) => {
+    res.status(404).json({ error: "API route not found" });
+  });
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);

@@ -5,13 +5,18 @@
   "license": "MIT",
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsx watch server/_core/index.ts",
-    "build": "vite build",
-    "build:local": "vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "build": "vite build && node scripts/generate-site-metadata.mjs",
+    "build:local": "vite build && node scripts/generate-site-metadata.mjs && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest run",
-    "db:push": "drizzle-kit generate && drizzle-kit migrate"
+    "db:push": "drizzle-kit generate && drizzle-kit migrate",
+    "content:sync:bocra-publications": "node scripts/sync-bocra-publications.mjs",
+    "content:sync:bocra-licence-register": "node scripts/sync-bocra-licence-register.mjs",
+    "content:sync:bocra-social-news": "node scripts/sync-bocra-social-news.mjs",
+    "metadata:generate": "node scripts/generate-site-metadata.mjs",
+    "demo:seed": "node scripts/seed-demo-data.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",
@@ -80,6 +85,7 @@
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.2",
     "wouter": "^3.3.5",
+    "xlsx": "^0.18.5",
     "zod": "^4.1.12",
     "zustand": "^5.0.12"
   },

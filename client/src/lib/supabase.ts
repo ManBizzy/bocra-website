@@ -6,7 +6,9 @@
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseAnonKey =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn(
@@ -30,18 +32,24 @@ export function isSupabaseConfigured(): boolean {
 /**
  * Helper to fetch news from Supabase
  */
-export async function fetchNews(limit = 3) {
+export async function fetchNews(limit?: number) {
   if (!isSupabaseConfigured()) {
     console.warn('Supabase not configured, returning empty news');
     return [];
   }
 
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('news')
       .select('*')
+      .eq('published', true)
       .order('published_at', { ascending: false })
-      .limit(limit);
+
+    if (typeof limit === 'number') {
+      query = query.limit(limit);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
     return data || [];
@@ -65,6 +73,7 @@ export async function fetchNewsBySlug(slug: string) {
       .from('news')
       .select('*')
       .eq('slug', slug)
+      .eq('published', true)
       .single();
 
     if (error) throw error;
@@ -78,18 +87,24 @@ export async function fetchNewsBySlug(slug: string) {
 /**
  * Helper to fetch publications
  */
-export async function fetchPublications(limit = 10) {
+export async function fetchPublications(limit?: number) {
   if (!isSupabaseConfigured()) {
     console.warn('Supabase not configured, returning empty publications');
     return [];
   }
 
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('publications')
       .select('*')
-      .order('published_at', { ascending: false })
-      .limit(limit);
+      .eq('published', true)
+      .order('published_at', { ascending: false });
+
+    if (typeof limit === 'number') {
+      query = query.limit(limit);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
     return data || [];
@@ -126,25 +141,85 @@ export async function fetchEvents(limit = 5) {
 /**
  * Helper to fetch active consultations
  */
-export async function fetchConsultations(limit = 3) {
+export async function fetchConsultations(
+  limit?: number,
+  status: 'open' | 'closed' | 'archived' | 'all' = 'open'
+) {
   if (!isSupabaseConfigured()) {
     console.warn('Supabase not configured, returning empty consultations');
     return [];
   }
 
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('consultations')
       .select('*')
-      .eq('status', 'open')
-      .order('end_date', { ascending: true })
-      .limit(limit);
+      .order('end_date', { ascending: true });
+
+    if (status !== 'all') {
+      query = query.eq('status', status);
+    }
+
+    if (typeof limit === 'number') {
+      query = query.limit(limit);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
     return data || [];
   } catch (error) {
     console.error('Error fetching consultations:', error);
     return [];
+  }
+}
+
+/**
+ * Helper to fetch a single publication by slug
+ */
+export async function fetchPublicationBySlug(slug: string) {
+  if (!isSupabaseConfigured()) {
+    console.warn('Supabase not configured');
+    return null;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('publications')
+      .select('*')
+      .eq('slug', slug)
+      .eq('published', true)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching publication:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper to fetch a single consultation by ID
+ */
+export async function fetchConsultationById(id: string) {
+  if (!isSupabaseConfigured()) {
+    console.warn('Supabase not configured');
+    return null;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('consultations')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching consultation:', error);
+    return null;
   }
 }
 
@@ -175,25 +250,3 @@ export async function submitContactForm(data: {
   }
 }
 
-/**
- * Helper to search domains
- */
-export async function searchDomains(domainName: string) {
-  if (!isSupabaseConfigured()) {
-    throw new Error('Supabase not configured');
-  }
-
-  try {
-    const { data, error } = await supabase
-      .from('domains')
-      .select('*')
-      .ilike('domain_name', `%${domainName}%`)
-      .limit(10);
-
-    if (error) throw error;
-    return data || [];
-  } catch (error) {
-    console.error('Error searching domains:', error);
-    throw error;
-  }
-}

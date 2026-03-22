@@ -17,8 +17,15 @@ export interface News {
   slug: string;
   excerpt: string;
   content: string;
-  category: 'announcement' | 'consultation' | 'regulation' | 'update';
+  category:
+    | 'announcement'
+    | 'consultation'
+    | 'regulation'
+    | 'update'
+    | 'vacancy';
   featured_image_url?: string;
+  source_url?: string | null;
+  source_label?: string | null;
   published_at: string;
   created_at: string;
   updated_at: string;
@@ -30,6 +37,9 @@ export interface Publication {
   slug: string;
   description: string;
   file_url: string;
+  source_url?: string;
+  storage_bucket?: string;
+  storage_path?: string;
   file_type: 'pdf' | 'doc' | 'docx' | 'xlsx' | 'pptx';
   category: string;
   published_at: string;
@@ -47,6 +57,38 @@ export interface License {
   issued_date?: string;
   expiry_date?: string;
   application_date: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface LicenseApplicationAttachment {
+  name: string;
+  mime_type: string;
+  size_bytes: number;
+  storage_bucket: string;
+  storage_path: string;
+  signed_url?: string | null;
+}
+
+export interface LicenseApplication {
+  id: string;
+  user_id: string;
+  application_type: string;
+  organization_name: string;
+  contact_name: string;
+  contact_email: string;
+  contact_phone?: string | null;
+  service_area: string;
+  summary: string;
+  status:
+    | 'submitted'
+    | 'under_review'
+    | 'more_information_required'
+    | 'approved'
+    | 'rejected';
+  review_notes?: string | null;
+  attachments: LicenseApplicationAttachment[];
+  submitted_at: string;
   created_at: string;
   updated_at: string;
 }
@@ -135,10 +177,13 @@ export interface PaginatedResponse<T> {
  * Form submission types
  */
 export interface LicenseApplicationForm {
-  licenseType: string;
-  operatorName: string;
+  applicationType: string;
+  organizationName: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone?: string;
   serviceArea: string;
-  description: string;
+  summary: string;
   attachments?: File[];
 }
 
