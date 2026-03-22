@@ -1,29 +1,12 @@
 import { motion } from 'framer-motion';
-import { Clock, Shield, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { getLoginUrl } from '@/const';
 
-const features = [
-  {
-    icon: Shield,
-    title: 'Secure Portal Access',
-    description:
-      'Sign in with a BOCRA account and load role-based dashboard views for citizens and admins.',
-  },
-  {
-    icon: Clock,
-    title: 'Licence Verification',
-    description:
-      'Search the mirrored BOCRA licence register in the portal instead of downloading the source workbook first.',
-  },
-  {
-    icon: Smartphone,
-    title: 'Complaint Tracking',
-    description:
-      'File a complaint, then monitor its progress from the same dashboard used for verification and follow-up.',
-  },
-];
+const featureHighlights = [
+  'Secure portal access',
+  'Licence verification',
+  'Complaint tracking',
+] as const;
 
 export default function PortalHighlightSection() {
   return (
@@ -43,26 +26,15 @@ export default function PortalHighlightSection() {
           use the same Supabase-backed demo accounts that feed the admin queue.
         </p>
 
-        <div className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
-
-            return (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-              >
-                <Card className="border-white/20 bg-white/10 p-6 text-white backdrop-blur-sm transition-colors hover:bg-white/15">
-                  <Icon className="mx-auto mb-4 h-12 w-12 text-bocra-golden-yellow" />
-                  <h3 className="mb-2 text-lg font-semibold">{feature.title}</h3>
-                  <p className="text-sm text-white/80">{feature.description}</p>
-                </Card>
-              </motion.div>
-            );
-          })}
+        <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
+          {featureHighlights.map((item) => (
+            <span
+              key={item}
+              className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 backdrop-blur-sm"
+            >
+              {item}
+            </span>
+          ))}
         </div>
 
         <motion.div
