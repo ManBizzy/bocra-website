@@ -28,6 +28,8 @@ const staticRoutes = [
   { path: "/services/domain-registry", changefreq: "monthly", priority: "0.7" },
   { path: "/services/broadcasting", changefreq: "monthly", priority: "0.7" },
   { path: "/services/cybersecurity", changefreq: "monthly", priority: "0.7" },
+  { path: "/licensing/register", changefreq: "weekly", priority: "0.8" },
+  { path: "/statistics", changefreq: "weekly", priority: "0.8" },
   { path: "/news", changefreq: "daily", priority: "0.9" },
   { path: "/publications", changefreq: "weekly", priority: "0.8" },
   { path: "/consultations", changefreq: "weekly", priority: "0.8" },
@@ -73,7 +75,8 @@ async function fetchDynamicRoutes() {
     auth: { persistSession: false },
   });
 
-  const [newsResult, consultationsResult] = await Promise.allSettled([
+  const [newsResult, consultationsResult, publicationsResult] =
+    await Promise.allSettled([
     supabase
       .from("news")
       .select("slug, published_at")
@@ -82,6 +85,10 @@ async function fetchDynamicRoutes() {
       .from("consultations")
       .select("id, created_at")
       .order("end_date", { ascending: true }),
+    supabase
+      .from("publications")
+      .select("slug, published_at")
+      .eq("published", true),
   ]);
 
   const routes = [];
@@ -110,6 +117,19 @@ async function fetchDynamicRoutes() {
         priority: "0.7",
         lastmod: item.created_at
           ? new Date(item.created_at).toISOString()
+          : undefined,
+      }))
+    );
+  }
+
+  if (publicationsResult.status === "fulfilled" && !publicationsResult.value.error) {
+    routes.push(
+      ...publicationsResult.value.data.map((item) => ({
+        path: `/resources/${item.slug}`,
+        changefreq: "monthly",
+        priority: "0.6",
+        lastmod: item.published_at
+          ? new Date(item.published_at).toISOString()
           : undefined,
       }))
     );

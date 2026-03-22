@@ -1,3 +1,11 @@
+import { PORTAL_LOGIN_URL } from '@/const';
+import {
+  FEATURED_RESOURCE_SLUGS,
+  LICENCE_REGISTER_URL,
+  STATISTICS_URL,
+  getPublicationResourceUrl,
+} from './internalResources';
+
 export type ServiceAccent = 'teal' | 'forest' | 'maroon' | 'gold';
 
 export interface ServiceChannel {
@@ -44,23 +52,28 @@ export const SERVICE_AREAS: ServiceArea[] = [
     ],
     channels: [
       {
+        label: 'Type Approval Database',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.typeApprovalDatabase
+        ),
+        description:
+          'Open the mirrored type-approval database directly on this site.',
+        external: false,
+      },
+      {
+        label: 'Type Approval Guidelines',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.typeApprovalGuidelines
+        ),
+        description:
+          'Review BOCRA’s published equipment approval guidance in the site viewer.',
+        external: false,
+      },
+      {
         label: 'Radio Spectrum Planning',
         href: 'https://www.bocra.org.bw/radio-spectrum-planning',
         description:
           'Review BOCRA’s official spectrum-planning responsibilities and mandate.',
-        external: true,
-      },
-      {
-        label: 'Type Approval',
-        href: 'https://www.bocra.org.bw/type-approval',
-        description:
-          'Understand equipment approval requirements and consumer-protection safeguards.',
-        external: true,
-      },
-      {
-        label: 'Type Approval Database',
-        href: 'https://www.bocra.org.bw/type-approval-database-0',
-        description: 'Open the published equipment approval database.',
         external: true,
       },
     ],
@@ -88,22 +101,24 @@ export const SERVICE_AREAS: ServiceArea[] = [
     ],
     channels: [
       {
-        label: 'Licensing Framework',
-        href: 'https://www.bocra.org.bw/licensing',
-        description: 'Review BOCRA’s licensing framework and sector coverage.',
-        external: true,
+        label: 'Licence Register',
+        href: LICENCE_REGISTER_URL,
+        description:
+          'Search BOCRA licence holders, broadcasting stations, and postal operators on this site.',
+        external: false,
       },
       {
         label: 'BOCRA Portal',
-        href: 'https://op-web.bocra.org.bw',
+        href: PORTAL_LOGIN_URL,
         description:
-          'Access BOCRA’s operator portal and related service workflows.',
-        external: true,
+          'Use the new BOCRA portal on this site for complaint and service workflows.',
+        external: false,
       },
       {
-        label: 'Licence Verification',
-        href: 'https://customerportal.bocra.org.bw',
-        description: 'Verify published licence information.',
+        label: 'Licensing Framework',
+        href: 'https://www.bocra.org.bw/licensing',
+        description:
+          'Review BOCRA’s published licensing framework and sector coverage.',
         external: true,
       },
     ],
@@ -178,19 +193,22 @@ export const SERVICE_AREAS: ServiceArea[] = [
       {
         label: 'bw ccTLD',
         href: 'https://www.bocra.org.bw/bw-cctld',
-        description: 'Read BOCRA’s official mandate and responsibilities for .bw.',
+        description:
+          'Read BOCRA’s official mandate and responsibilities for .bw.',
         external: true,
       },
       {
         label: 'Open nic.net.bw',
         href: 'https://nic.net.bw',
-        description: 'Use the official external registry website for live .bw registration and management.',
+        description:
+          'Use the official external registry website for live .bw registration and management.',
         external: true,
       },
       {
         label: '.bw Terms and Conditions',
         href: 'https://www.bocra.org.bw/botswana-domain-name-bw-registration-terms-and-conditions',
-        description: 'Review the published .bw registration terms and conditions.',
+        description:
+          'Review the published .bw registration terms and conditions.',
         external: true,
       },
     ],
@@ -218,10 +236,13 @@ export const SERVICE_AREAS: ServiceArea[] = [
     ],
     channels: [
       {
-        label: 'Broadcasting Overview',
-        href: 'https://www.bocra.org.bw/broadcasting',
-        description: 'Review BOCRA’s broadcasting-sector overview.',
-        external: true,
+        label: 'Audience Survey Report',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.broadcastingAudienceSurvey
+        ),
+        description:
+          'Open the mirrored NBB audience survey report directly on this site.',
+        external: false,
       },
       {
         label: 'Broadcasting Regulation',
@@ -262,7 +283,8 @@ export const SERVICE_AREAS: ServiceArea[] = [
       {
         label: 'bw CIRT',
         href: 'https://www.bocra.org.bw/bw-cirt',
-        description: 'Review BOCRA’s communications-sector CIRT role and mandate.',
+        description:
+          'Review BOCRA’s communications-sector CIRT role and mandate.',
         external: true,
       },
       {
@@ -286,23 +308,28 @@ export const SERVICE_AREAS: ServiceArea[] = [
 export const SERVICE_PORTALS = [
   {
     label: 'BOCRA Portal',
-    href: 'https://op-web.bocra.org.bw',
-    description: 'Operator-facing portal and service workflows',
+    href: PORTAL_LOGIN_URL,
+    description: 'Use the new BOCRA portal for sign-in, complaints, and tracking',
+    external: false,
   },
   {
     label: 'Licence Verification',
     href: 'https://customerportal.bocra.org.bw',
     description: 'Published licence verification channel',
+    external: true,
   },
   {
     label: 'Telecoms Statistics',
-    href: 'https://www.bocra.org.bw/telecoms-statistics',
-    description: 'Latest published sector statistics and trends',
+    href: STATISTICS_URL,
+    description:
+      'View KPI trends, broadband facts, and mirrored sector reports on this site',
+    external: false,
   },
   {
     label: 'Register BW',
     href: 'https://nic.net.bw',
     description: 'Live .bw registration and registry access',
+    external: true,
   },
 ] as const;
 
@@ -331,7 +358,8 @@ export function getAccentClasses(accent: ServiceAccent) {
         text: 'text-bocra-deep-teal',
         soft: 'bg-bocra-golden-yellow/25 text-bocra-deep-teal',
         border: 'border-bocra-golden-yellow',
-        button: 'bg-bocra-golden-yellow text-bocra-text-primary hover:bg-bocra-golden-yellow/90',
+        button:
+          'bg-bocra-golden-yellow text-bocra-text-primary hover:bg-bocra-golden-yellow/90',
       };
     case 'teal':
     default:

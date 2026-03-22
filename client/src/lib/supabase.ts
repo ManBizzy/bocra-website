@@ -175,6 +175,31 @@ export async function fetchConsultations(
 }
 
 /**
+ * Helper to fetch a single publication by slug
+ */
+export async function fetchPublicationBySlug(slug: string) {
+  if (!isSupabaseConfigured()) {
+    console.warn('Supabase not configured');
+    return null;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('publications')
+      .select('*')
+      .eq('slug', slug)
+      .eq('published', true)
+      .maybeSingle();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error fetching publication:', error);
+    return null;
+  }
+}
+
+/**
  * Helper to fetch a single consultation by ID
  */
 export async function fetchConsultationById(id: string) {
