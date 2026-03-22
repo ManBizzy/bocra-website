@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Search, Globe, CheckCircle2, Clock, Shield, Lock, AlertCircle, Download, ArrowRight, Phone } from 'lucide-react';
+import { Search, Globe, CheckCircle2, Clock, Shield, Lock, AlertCircle, Download, ArrowRight, Phone, BarChart3, Building2, Zap, Mail, FileText } from 'lucide-react';
 
 export default function DomainRegistry() {
   const [searchDomain, setSearchDomain] = useState('');
@@ -270,19 +270,22 @@ export default function DomainRegistry() {
         {/* Quick Stats */}
         <section className="grid md:grid-cols-4 gap-6">
           {[
-            { label: 'Registered Domains', value: '2,500+', icon: '📊' },
-            { label: 'Active Registrars', value: '4', icon: '🏢' },
-            { label: 'Avg Registration Time', value: '5 mins', icon: '⚡' },
-            { label: 'Domain Extension', value: '.bw', icon: '🌐' },
-          ].map((stat, idx) => (
+            { label: 'Registered Domains', value: '2,500+', icon: BarChart3 },
+            { label: 'Active Registrars', value: '4', icon: Building2 },
+            { label: 'Avg Registration Time', value: '5 mins', icon: Zap },
+            { label: 'Domain Extension', value: '.bw', icon: Globe },
+          ].map((stat, idx) => {
+            const StatIcon = stat.icon;
+            return (
             <Card key={idx}>
               <CardContent className="py-8 text-center">
-                <div className="text-3xl mb-2">{stat.icon}</div>
+                <StatIcon className="w-8 h-8 text-bocra-teal mx-auto mb-2" />
                 <p className="text-bocra-text-secondary text-sm mb-2">{stat.label}</p>
                 <p className="text-2xl font-bold text-bocra-teal">{stat.value}</p>
               </CardContent>
             </Card>
-          ))}
+          );
+          })}
         </section>
 
         {/* Domain Registration Process */}
@@ -471,27 +474,30 @@ export default function DomainRegistry() {
               {
                 title: 'Email Support',
                 contact: 'domains@bocra.org.bw',
-                icon: '✉️',
+                icon: Mail,
               },
               {
                 title: 'Phone Support',
                 contact: '+267 XXX-XXXX',
-                icon: '☎️',
+                icon: Phone,
               },
               {
                 title: 'Download Documentation',
                 contact: 'Guidelines & Policies',
-                icon: '📄',
+                icon: FileText,
               },
-            ].map((support, idx) => (
+            ].map((support, idx) => {
+              const SupportIcon = support.icon;
+              return (
               <Card key={idx}>
                 <CardContent className="py-8 text-center">
-                  <div className="text-4xl mb-3">{support.icon}</div>
+                  <SupportIcon className="w-8 h-8 text-bocra-teal mx-auto mb-3" />
                   <p className="font-semibold text-bocra-text-primary mb-2">{support.title}</p>
                   <p className="text-bocra-text-secondary font-mono">{support.contact}</p>
                 </CardContent>
               </Card>
-            ))}
+            );
+            })}
           </div>
         </section>
 

@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, CheckCircle2, Clock, Shield, Phone, Mail, MessageSquare, FileText, ArrowRight, Send } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Clock, Shield, Phone, Mail, MessageSquare, FileText, ArrowRight, Send, Signal, DollarSign, Users, AlertTriangle, HelpCircle, TrendingUp, Folder } from 'lucide-react';
 
 export default function Complaints() {
   const [formData, setFormData] = useState({
@@ -21,49 +21,49 @@ export default function Complaints() {
       id: 'quality',
       title: 'Quality of Service',
       desc: 'Poor voice/data quality, frequent disconnections, slow speeds',
-      icon: '📶',
+      icon: Signal,
     },
     {
       id: 'billing',
       title: 'Billing Issues',
       desc: 'Overcharging, disputed bill amounts, incorrect invoices',
-      icon: '💰',
+      icon: DollarSign,
     },
     {
       id: 'customer',
       title: 'Customer Service',
       desc: 'Poor customer support, unresolved issues, rude staff',
-      icon: '👥',
+      icon: Users,
     },
     {
       id: 'contract',
       title: 'Contract Violations',
       desc: 'Breach of service agreement, unfair terms, unauthorized charges',
-      icon: '📋',
+      icon: FileText,
     },
     {
       id: 'coverage',
       title: 'Coverage Issues',
       desc: 'No signal, poor coverage in specific areas',
-      icon: '🗺️',
+      icon: AlertCircle,
     },
     {
       id: 'harassment',
       title: 'Harassment/Harassment',
       desc: 'Unwanted calls, SMS, or other abusive communication',
-      icon: '⚠️',
+      icon: AlertTriangle,
     },
     {
       id: 'refund',
       title: 'Refund Requests',
       desc: 'Service credit requests, refund claims',
-      icon: '💵',
+      icon: DollarSign,
     },
     {
       id: 'other',
       title: 'Other',
       desc: 'Any other complaints not listed above',
-      icon: '❓',
+      icon: HelpCircle,
     },
   ];
 
@@ -168,19 +168,22 @@ export default function Complaints() {
         {/* Quick Stats */}
         <section className="grid md:grid-cols-4 gap-6">
           {[
-            { label: 'Complaints Resolved', value: '500+', icon: '✓' },
-            { label: 'Avg Resolution Time', value: '21 days', icon: '⏱️' },
-            { label: 'Success Rate', value: '85%', icon: '📈' },
-            { label: 'Active Cases', value: '45', icon: '📂' },
-          ].map((stat, idx) => (
+            { label: 'Complaints Resolved', value: '500+', icon: CheckCircle2 },
+            { label: 'Avg Resolution Time', value: '21 days', icon: Clock },
+            { label: 'Success Rate', value: '85%', icon: TrendingUp },
+            { label: 'Active Cases', value: '45', icon: Folder },
+          ].map((stat, idx) => {
+            const StatIcon = stat.icon;
+            return (
             <Card key={idx}>
               <CardContent className="py-8 text-center">
-                <div className="text-3xl mb-2">{stat.icon}</div>
+                <StatIcon className="w-8 h-8 text-bocra-teal mx-auto mb-2" />
                 <p className="text-bocra-text-secondary text-sm mb-2">{stat.label}</p>
                 <p className="text-2xl font-bold text-bocra-teal">{stat.value}</p>
               </CardContent>
             </Card>
-          ))}
+          );
+          })}
         </section>
 
         {/* Why BOCRA */}
@@ -227,17 +230,20 @@ export default function Complaints() {
             BOCRA investigates complaints across all areas of telecommunications, broadcasting, and postal services.
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {complaintTypes.map((type) => (
+            {complaintTypes.map((type) => {
+              const TypeIcon = type.icon;
+              return (
               <Card key={type.id} className="hover:shadow-lg transition-all hover:border-bocra-teal">
                 <CardHeader>
-                  <div className="text-4xl mb-2">{type.icon}</div>
+                  <TypeIcon className="w-8 h-8 text-bocra-teal mb-2" />
                   <CardTitle className="text-lg">{type.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-bocra-text-secondary">{type.desc}</p>
                 </CardContent>
               </Card>
-            ))}
+            );
+            })}
           </div>
         </section>
 
