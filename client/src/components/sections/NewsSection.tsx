@@ -5,11 +5,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useNews } from '@/hooks/useNews';
 import { NEWS_CATEGORIES } from '@/const';
 import { formatDistanceToNow } from 'date-fns';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function NewsSection() {
   const { news, loading } = useNews(3);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
 
   // Fake featured news data for carousel
   const featuredNews = [
@@ -41,6 +42,17 @@ export default function NewsSection() {
       published_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
     },
   ];
+
+  // Auto-play carousel every 2 seconds (pause on hover)
+  useEffect(() => {
+    if (isHovering) return;
+
+    const interval = setInterval(() => {
+      setCarouselIndex((prev) => (prev + 1) % featuredNews.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [isHovering, featuredNews.length]);
 
   if (loading) {
     return (
@@ -78,7 +90,7 @@ export default function NewsSection() {
 
         {/* Featured News Carousel */}
         <div className="mb-12">
-          <div className="relative group">
+          <div className="relative group" onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
             {/* Carousel Item */}
             <div className="relative h-96 rounded-lg overflow-hidden">
               {featuredNews[carouselIndex].featured_image_url && (

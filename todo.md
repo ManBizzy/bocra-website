@@ -25,12 +25,12 @@
 - [x] Consultation section with CTA
 
 ## Phase 4: Public Pages
-- [ ] About page with full BOCRA information
-- [ ] Services page with detailed service descriptions
-- [ ] Licensing page with application info
-- [ ] Complaints page with submission form
-- [ ] Domain Registry page with search functionality
-- [ ] News listing page with filters
+- [x] About page with full BOCRA information
+- [x] Services page with detailed service descriptions
+- [x] Licensing page with application info
+- [x] Complaints page with submission form
+- [x] Domain Registry page with search functionality
+- [x] News listing page with filters
 - [ ] News article detail page
 - [ ] Publications page with document listing
 - [ ] Contact page with contact form
