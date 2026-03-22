@@ -26,15 +26,27 @@ export default function PortalLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const nextPath =
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search).get('next')
+      : null;
 
   useEffect(() => {
     if (loading || !user) {
       return;
     }
 
-    window.location.href =
+    const fallbackPath =
       user.role === 'admin' ? ADMIN_DASHBOARD_URL : CITIZEN_PORTAL_URL;
-  }, [loading, user]);
+    const destination =
+      user.role === 'admin'
+        ? ADMIN_DASHBOARD_URL
+        : nextPath && nextPath.startsWith('/')
+          ? nextPath
+          : fallbackPath;
+
+    window.location.href = destination;
+  }, [loading, nextPath, user]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -65,7 +77,11 @@ export default function PortalLogin() {
 
       const currentUser = await refresh();
       const nextUrl =
-        currentUser?.role === 'admin' ? ADMIN_DASHBOARD_URL : CITIZEN_PORTAL_URL;
+        currentUser?.role === 'admin'
+          ? ADMIN_DASHBOARD_URL
+          : nextPath && nextPath.startsWith('/')
+            ? nextPath
+            : CITIZEN_PORTAL_URL;
 
       toast.success(mode === 'signup' ? 'Account created.' : 'Signed in.');
       window.location.href = nextUrl;

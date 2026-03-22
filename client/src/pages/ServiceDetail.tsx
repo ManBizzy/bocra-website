@@ -77,12 +77,28 @@ export default function ServiceDetail({ slug }: ServiceDetailProps) {
     );
   }
 
+  const complaintPortalHref = `/portal/login?next=${encodeURIComponent(
+    '/portal/dashboard#file-complaint'
+  )}`;
   const accent = getAccentClasses(service.accent);
   const relatedServices = SERVICE_AREAS.filter(
     (candidate) => candidate.slug !== service.slug
   ).slice(0, 3);
   const orderedChannels =
-    service.slug === 'domain-registry'
+    service.slug === 'complaints'
+      ? [
+          {
+            label: 'File in BOCRA Portal',
+            href: complaintPortalHref,
+            description:
+              'Sign in, submit your complaint in the portal, and track the status as BOCRA reviews it.',
+            external: false,
+          },
+          ...service.channels.filter(
+            (channel) => channel.href !== 'https://www.bocra.org.bw/file-complaint'
+          ),
+        ]
+      : service.slug === 'domain-registry'
       ? [
           ...service.channels.filter(
             (channel) => channel.href === 'https://nic.net.bw'

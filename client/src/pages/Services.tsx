@@ -28,6 +28,10 @@ const SERVICE_ICON_MAP = {
 } as const;
 
 export default function Services() {
+  const complaintPortalHref = `/portal/login?next=${encodeURIComponent(
+    '/portal/dashboard#file-complaint'
+  )}`;
+
   return (
     <>
       <Helmet>
@@ -107,7 +111,12 @@ export default function Services() {
                 ] ?? Radio;
               const accent = getAccentClasses(service.accent);
               const officialChannel =
-                service.slug === 'domain-registry'
+                service.slug === 'complaints'
+                  ? {
+                      href: complaintPortalHref,
+                      external: false,
+                    }
+                  : service.slug === 'domain-registry'
                   ? service.channels.find(
                       (channel) => channel.href === 'https://nic.net.bw'
                     ) ?? service.channels[0]

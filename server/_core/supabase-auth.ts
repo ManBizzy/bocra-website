@@ -8,6 +8,9 @@ import { SignJWT, jwtVerify } from "jose";
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseServiceKey =
   process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabasePublishableKey =
+  process.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
+  process.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
   throw new Error(
@@ -15,7 +18,29 @@ if (!supabaseUrl || !supabaseServiceKey) {
   );
 }
 
-export const supabase = createClient(supabaseUrl, supabaseServiceKey);
+export const supabase = createClient(supabaseUrl!, supabaseServiceKey!, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+    detectSessionInUrl: false,
+  },
+});
+
+function createSupabaseAuthClient() {
+  const authClientKey = supabasePublishableKey ?? supabaseServiceKey;
+
+  return createClient(
+    supabaseUrl!,
+    authClientKey!,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    }
+  );
+}
 
 export type AuthenticatedUser = {
   id: string;
@@ -199,7 +224,8 @@ export function registerSupabaseAuthRoutes(app: Express) {
         );
       }
 
-      const loginResult = await supabase.auth.signInWithPassword({
+      const authClient = createSupabaseAuthClient();
+      const loginResult = await authClient.auth.signInWithPassword({
         email,
         password,
       });
@@ -246,7 +272,8 @@ export function registerSupabaseAuthRoutes(app: Express) {
         return;
       }
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const authClient = createSupabaseAuthClient();
+      const { data, error } = await authClient.auth.signInWithPassword({
         email,
         password,
       });

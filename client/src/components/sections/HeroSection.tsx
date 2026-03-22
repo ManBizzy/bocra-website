@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { HOMEPAGE_STATS } from '@/const';
+import { getLoginUrl, HOMEPAGE_STATS } from '@/const';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -78,9 +78,13 @@ export default function HeroSection() {
         >
           <Button
             className="bg-white px-8 py-6 text-base font-semibold text-bocra-teal hover:bg-white/90"
-            onClick={() => (window.location.href = '/services/complaints')}
+            onClick={() =>
+              (window.location.href = `${getLoginUrl()}?next=${encodeURIComponent(
+                '/portal/dashboard#file-complaint'
+              )}`)
+            }
           >
-            Consumer Complaints
+            File a Complaint
           </Button>
           <Button
             variant="outline"
