@@ -1,16 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import {
   ArrowLeft,
   ArrowRight,
   CalendarDays,
+  Download,
   FileText,
   Home,
   MessageSquare,
+  Search,
+  ShieldCheck,
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'sonner';
 import { useAuth } from '@/_core/hooks/useAuth';
+import { LICENCE_REGISTER_SOURCE_URL } from '@/data/licenceRegisterData';
+import {
+  LICENCE_VERIFICATION_COUNTS,
+  LICENCE_VERIFICATION_RECORDS,
+  LICENCE_VERIFICATION_TABS,
+  type LicenceVerificationStatus,
+} from '@/lib/licenceVerification';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -78,6 +88,12 @@ const complaintStageLabel: Record<ComplaintStatus, string> = {
   closed: 'Closed',
 };
 
+const verificationBadgeClass: Record<LicenceVerificationStatus, string> = {
+  active: 'bg-bocra-forest-green text-white',
+  revoked: 'bg-bocra-dark-maroon text-white',
+  surrendered_cancelled: 'bg-bocra-golden-yellow text-bocra-text-primary',
+};
+
 const complaintCategories = [
   'Mobile data quality',
   'Voice service',
@@ -96,6 +112,20 @@ const initialComplaintForm: ComplaintFormState = {
   priority: 'medium',
   description: '',
 };
+
+function formatRegisterDate(value: string | null) {
+  if (!value) {
+    return 'Not listed';
+  }
+
+  const parsedDate = new Date(value);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return value;
+  }
+
+  return format(parsedDate, 'dd MMM yyyy');
+}
 
 function ComplaintProgress({ status }: { status: ComplaintStatus }) {
   const currentIndex = complaintStageOrder.indexOf(status);
@@ -132,6 +162,23 @@ export default function PortalDashboard() {
   const [complaintForm, setComplaintForm] =
     useState<ComplaintFormState>(initialComplaintForm);
   const [isSubmittingComplaint, setIsSubmittingComplaint] = useState(false);
+  const [verificationTabId, setVerificationTabId] = useState('all');
+  const [verificationQuery, setVerificationQuery] = useState('');
+
+  const verificationResults = useMemo(() => {
+    const normalizedQuery = verificationQuery.trim().toLowerCase();
+
+    return LICENCE_VERIFICATION_RECORDS.filter((record) => {
+      const matchesTab =
+        verificationTabId === 'all' || record.sheetId === verificationTabId;
+      const matchesQuery =
+        !normalizedQuery || record.searchText.includes(normalizedQuery);
+
+      return matchesTab && matchesQuery;
+    });
+  }, [verificationQuery, verificationTabId]);
+
+  const visibleVerificationResults = verificationResults.slice(0, 12);
 
   const loadOverview = async () => {
     setOverviewLoading(true);
@@ -250,8 +297,8 @@ export default function PortalDashboard() {
           <div>
             <h1 className="text-4xl font-bold">Citizen Portal</h1>
             <p className="mt-2 text-bocra-text-secondary">
-              Submit a complaint, then track its progress as BOCRA reviews and
-              resolves it.
+              Verify published licence holders, submit a complaint, and track
+              BOCRA follow-up from one signed-in workspace.
             </p>
           </div>
           <Button variant="outline" onClick={logout}>
@@ -408,6 +455,13 @@ export default function PortalDashboard() {
               </CardHeader>
               <CardContent className="space-y-3 text-sm">
                 <a
+                  href="/licensing/register"
+                  className="flex items-center justify-between rounded-xl border border-bocra-border px-4 py-3 transition-colors hover:bg-bocra-light-grey"
+                >
+                  <span>Full licence register</span>
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+                <a
                   href="/services/complaints"
                   className="flex items-center justify-between rounded-xl border border-bocra-border px-4 py-3 transition-colors hover:bg-bocra-light-grey"
                 >
@@ -428,6 +482,197 @@ export default function PortalDashboard() {
                   <span>General enquiries</span>
                   <ArrowRight className="h-4 w-4" />
                 </a>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        <div className="mt-8 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+          <Card id="licence-verification">
+            <CardHeader>
+              <CardTitle>Licence Verification</CardTitle>
+              <CardDescription>
+                Search the mirrored BOCRA register by operator name, licence
+                number, or service lane without downloading the source workbook
+                first.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {LICENCE_VERIFICATION_TABS.map((tab) => (
+                  <Button
+                    key={tab.id}
+                    type="button"
+                    variant={verificationTabId === tab.id ? 'default' : 'outline'}
+                    className={
+                      verificationTabId === tab.id
+                        ? 'bg-bocra-forest-green text-white hover:bg-bocra-forest-green/90'
+                        : ''
+                    }
+                    onClick={() => setVerificationTabId(tab.id)}
+                  >
+                    {tab.label}
+                  </Button>
+                ))}
+              </div>
+
+              <div className="mt-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-bocra-text-primary">
+                    {verificationResults.length} matching record
+                    {verificationResults.length === 1 ? '' : 's'}
+                  </p>
+                  <p className="mt-1 text-sm text-bocra-text-secondary">
+                    Search by operator, company name, section, or licence number.
+                  </p>
+                </div>
+
+                <div className="relative w-full md:max-w-md">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-bocra-text-muted" />
+                  <Input
+                    type="search"
+                    value={verificationQuery}
+                    onChange={(event) => setVerificationQuery(event.target.value)}
+                    placeholder="Search the licence register"
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 space-y-4">
+                {visibleVerificationResults.length ? (
+                  visibleVerificationResults.map((record) => (
+                    <div
+                      key={record.id}
+                      className="rounded-2xl border border-bocra-border p-4"
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <p className="text-lg font-semibold text-bocra-text-primary">
+                            {record.entityName}
+                          </p>
+                          <p className="mt-1 text-sm text-bocra-text-secondary">
+                            {record.sheetLabel} / {record.sectionLabel}
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          <Badge className={verificationBadgeClass[record.status]}>
+                            {record.statusLabel}
+                          </Badge>
+                          <Badge variant="outline">{record.sheetLabel}</Badge>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 grid gap-3 text-sm text-bocra-text-secondary md:grid-cols-3">
+                        <div className="rounded-xl bg-bocra-light-grey px-3 py-2">
+                          <span className="font-semibold text-bocra-text-primary">
+                            Licence No:
+                          </span>{' '}
+                          {record.licenceNumber ?? 'Not listed'}
+                        </div>
+                        <div className="rounded-xl bg-bocra-light-grey px-3 py-2">
+                          <span className="font-semibold text-bocra-text-primary">
+                            Issued:
+                          </span>{' '}
+                          {formatRegisterDate(record.issuedDate)}
+                        </div>
+                        <div className="rounded-xl bg-bocra-light-grey px-3 py-2">
+                          <span className="font-semibold text-bocra-text-primary">
+                            Expiry:
+                          </span>{' '}
+                          {formatRegisterDate(record.expiryDate)}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="rounded-2xl border border-dashed border-bocra-border px-4 py-6 text-sm text-bocra-text-secondary">
+                    No licence records match this search yet. Try a company
+                    name, a licence number, or switch to another tab.
+                  </p>
+                )}
+              </div>
+
+              {verificationResults.length > visibleVerificationResults.length && (
+                <p className="mt-4 text-sm text-bocra-text-secondary">
+                  Showing the first {visibleVerificationResults.length} matches.
+                  Narrow the search for a specific operator or open the full
+                  register for deeper browsing.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Register Snapshot</CardTitle>
+                <CardDescription>
+                  Published BOCRA register counts mirrored into this portal.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    ['Total', LICENCE_VERIFICATION_COUNTS.total],
+                    ['Active', LICENCE_VERIFICATION_COUNTS.active],
+                    ['Revoked', LICENCE_VERIFICATION_COUNTS.revoked],
+                    [
+                      'Surrendered',
+                      LICENCE_VERIFICATION_COUNTS.surrenderedCancelled,
+                    ],
+                  ].map(([label, value]) => (
+                    <div
+                      key={label}
+                      className="rounded-2xl bg-bocra-light-grey p-4"
+                    >
+                      <p className="text-xs uppercase tracking-[0.2em] text-bocra-text-muted">
+                        {label}
+                      </p>
+                      <p className="mt-3 text-2xl font-semibold text-bocra-text-primary">
+                        {value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Verification Actions</CardTitle>
+                <CardDescription>
+                  Open the full register view or the original BOCRA workbook
+                  when you need more context.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm text-bocra-text-secondary">
+                <div className="rounded-2xl bg-bocra-light-grey p-4">
+                  This portal mirrors the published licence workbook for quick
+                  public verification. Formal licensing applications still use
+                  the BOCRA service channels shown on the licensing page.
+                </div>
+                <a
+                  href="/licensing/register"
+                  className="flex items-center justify-between rounded-xl border border-bocra-border px-4 py-3 transition-colors hover:bg-bocra-light-grey"
+                >
+                  <span>Open full licence register</span>
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+                <a
+                  href={LICENCE_REGISTER_SOURCE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between rounded-xl border border-bocra-border px-4 py-3 transition-colors hover:bg-bocra-light-grey"
+                >
+                  <span>Download source workbook</span>
+                  <Download className="h-4 w-4" />
+                </a>
+                <div className="inline-flex items-center gap-2 rounded-xl bg-bocra-teal/10 px-4 py-3 text-bocra-teal">
+                  <ShieldCheck className="h-4 w-4" />
+                  Use complaint filing when a verified operator still needs
+                  regulatory follow-up.
+                </div>
               </CardContent>
             </Card>
           </div>

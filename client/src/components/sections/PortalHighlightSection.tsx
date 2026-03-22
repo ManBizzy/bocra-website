@@ -13,15 +13,15 @@ const features = [
   },
   {
     icon: Clock,
-    title: 'Complaint Activity',
+    title: 'Licence Verification',
     description:
-      'Review seeded complaint history, queue status, and recent BOCRA activity from one place.',
+      'Search the mirrored BOCRA licence register in the portal instead of downloading the source workbook first.',
   },
   {
     icon: Smartphone,
-    title: 'Mobile Ready',
+    title: 'Complaint Tracking',
     description:
-      'The portal and public site are designed to work cleanly on phones, tablets, and desktop browsers.',
+      'File a complaint, then monitor its progress from the same dashboard used for verification and follow-up.',
   },
 ];
 
@@ -39,9 +39,8 @@ export default function PortalHighlightSection() {
           One BOCRA View for Citizens and Staff
         </h2>
         <p className="mx-auto mb-12 max-w-2xl text-lg text-white/90">
-          Sign in to review complaint activity, access BOCRA dashboard views,
-          and use the same Supabase-backed demo accounts that feed the admin
-          queue.
+          Sign in to verify licence holders, review complaint activity, and
+          use the same Supabase-backed demo accounts that feed the admin queue.
         </p>
 
         <div className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-3">

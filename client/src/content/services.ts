@@ -2,6 +2,8 @@ import { PORTAL_LOGIN_URL } from '@/const';
 import {
   FEATURED_RESOURCE_SLUGS,
   LICENCE_REGISTER_URL,
+  PORTAL_COMPLAINT_URL,
+  PORTAL_LICENCE_VERIFICATION_URL,
   STATISTICS_URL,
   getPublicationResourceUrl,
 } from './internalResources';
@@ -36,7 +38,7 @@ export const SERVICE_AREAS: ServiceArea[] = [
     icon: 'Radio',
     accent: 'teal',
     summary:
-      'Planning and managing Botswana’s radio frequency resources, assignments, standards, and equipment conformity.',
+      "Planning and managing Botswana's radio frequency resources, assignments, standards, and equipment conformity.",
     description:
       'BOCRA manages the national radio frequency plan, allocates spectrum, monitors occupancy, and works to avoid harmful interference. The same service area also oversees equipment type approval so radio and telecommunications devices used in Botswana align with applicable technical standards.',
     responsibilities: [
@@ -66,15 +68,17 @@ export const SERVICE_AREAS: ServiceArea[] = [
           FEATURED_RESOURCE_SLUGS.typeApprovalGuidelines
         ),
         description:
-          'Review BOCRA’s published equipment approval guidance in the site viewer.',
+          'Review BOCRA type-approval guidance in the site viewer.',
         external: false,
       },
       {
-        label: 'Radio Spectrum Planning',
-        href: 'https://www.bocra.org.bw/radio-spectrum-planning',
+        label: 'Spectrum Licensing Policy',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.spectrumLicensingPolicy
+        ),
         description:
-          'Review BOCRA’s official spectrum-planning responsibilities and mandate.',
-        external: true,
+          'Review the mirrored spectrum licensing and pricing policy on this site.',
+        external: false,
       },
     ],
   },
@@ -101,6 +105,13 @@ export const SERVICE_AREAS: ServiceArea[] = [
     ],
     channels: [
       {
+        label: 'Licence Verification Portal',
+        href: PORTAL_LICENCE_VERIFICATION_URL,
+        description:
+          'Sign in and verify published licence holders without leaving this site.',
+        external: false,
+      },
+      {
         label: 'Licence Register',
         href: LICENCE_REGISTER_URL,
         description:
@@ -108,18 +119,13 @@ export const SERVICE_AREAS: ServiceArea[] = [
         external: false,
       },
       {
-        label: 'BOCRA Portal',
-        href: PORTAL_LOGIN_URL,
-        description:
-          'Use the new BOCRA portal on this site for complaint and service workflows.',
-        external: false,
-      },
-      {
         label: 'Licensing Framework',
-        href: 'https://www.bocra.org.bw/licensing',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.licensingFramework
+        ),
         description:
-          'Review BOCRA’s published licensing framework and sector coverage.',
-        external: true,
+          'Review the mirrored BOCRA licensing framework on this site.',
+        external: false,
       },
     ],
   },
@@ -146,24 +152,29 @@ export const SERVICE_AREAS: ServiceArea[] = [
     ],
     channels: [
       {
-        label: 'File A Complaint',
-        href: 'https://www.bocra.org.bw/file-complaint',
-        description: 'Open BOCRA’s official complaint filing page.',
-        external: true,
+        label: 'File a Complaint',
+        href: PORTAL_COMPLAINT_URL,
+        description:
+          'Sign in, file a complaint, and track its status directly in the BOCRA portal.',
+        external: false,
       },
       {
         label: 'Complaints Handling Procedure',
-        href: 'https://www.bocra.org.bw/complaints-handling-procedure',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.complaintsHandlingProcedure
+        ),
         description:
-          'Review the formal complaint-handling procedure used by BOCRA.',
-        external: true,
+          'Review the mirrored complaint-handling procedure on this site.',
+        external: false,
       },
       {
         label: 'Quality of Service Guidelines',
-        href: 'https://www.bocra.org.bw/quality-service-guidelines',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.qualityOfServiceGuidelines
+        ),
         description:
-          'Check service-quality guidance relevant to complaint review.',
-        external: true,
+          'Check the latest mirrored ICT quality-of-service guidelines on this site.',
+        external: false,
       },
     ],
   },
@@ -187,16 +198,9 @@ export const SERVICE_AREAS: ServiceArea[] = [
       'When a registrant needs BOCRA guidance before using the external .bw registry',
       'When a registrant needs to open the live nic.net.bw registration workflow',
       'When stakeholders need .bw policy or terms-and-conditions documents',
-      'When teams need BOCRA’s official ccTLD mandate and governance context',
+      'When teams need BOCRA support on ccTLD governance questions',
     ],
     channels: [
-      {
-        label: 'bw ccTLD',
-        href: 'https://www.bocra.org.bw/bw-cctld',
-        description:
-          'Read BOCRA’s official mandate and responsibilities for .bw.',
-        external: true,
-      },
       {
         label: 'Open nic.net.bw',
         href: 'https://nic.net.bw',
@@ -206,10 +210,19 @@ export const SERVICE_AREAS: ServiceArea[] = [
       },
       {
         label: '.bw Terms and Conditions',
-        href: 'https://www.bocra.org.bw/botswana-domain-name-bw-registration-terms-and-conditions',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.domainTermsAndConditions
+        ),
         description:
-          'Review the published .bw registration terms and conditions.',
-        external: true,
+          'Review the mirrored .bw registration terms and conditions on this site.',
+        external: false,
+      },
+      {
+        label: 'Contact BOCRA',
+        href: '/contact',
+        description:
+          'Use the BOCRA contact page for policy questions that still need manual support.',
+        external: false,
       },
     ],
   },
@@ -246,15 +259,21 @@ export const SERVICE_AREAS: ServiceArea[] = [
       },
       {
         label: 'Broadcasting Regulation',
-        href: 'https://www.bocra.org.bw/broadcasting-regulation',
-        description: 'Open the published broadcasting regulation reference.',
-        external: true,
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.broadcastingRegulation
+        ),
+        description:
+          'Open the mirrored broadcasting regulation reference on this site.',
+        external: false,
       },
       {
-        label: 'Broadcasting Licence',
-        href: 'https://www.bocra.org.bw/broadcasting-licence',
-        description: 'Access the broadcasting licence information page.',
-        external: true,
+        label: 'Broadcasting Licence Procedure',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.broadcastingLicenceProcedure
+        ),
+        description:
+          'Access the mirrored broadcasting licence application procedure on this site.',
+        external: false,
       },
     ],
   },
@@ -267,7 +286,7 @@ export const SERVICE_AREAS: ServiceArea[] = [
     summary:
       'Communications-sector cybersecurity coordination, digital trust services, and public security reference material.',
     description:
-      'BOCRA hosts the communications-sector CIRT function and also carries responsibilities under Botswana’s electronic transactions and electronic evidence framework. This service area is the right entry point for cybersecurity guidance, digital trust references, and sector-level response coordination context.',
+      "BOCRA hosts the communications-sector CIRT function and also carries responsibilities under Botswana's electronic transactions and electronic evidence framework. This service area is the right entry point for cybersecurity guidance, digital trust references, and sector-level response coordination context.",
     responsibilities: [
       'Communications-sector cybersecurity focal-point coordination',
       'bw CIRT guidance and reference material',
@@ -277,29 +296,33 @@ export const SERVICE_AREAS: ServiceArea[] = [
     useCases: [
       'When organisations need communications-sector cybersecurity guidance',
       'When teams need digital trust, electronic transactions, or evidence references',
-      'When stakeholders need BOCRA’s published cybersecurity and CIRT context',
+      "When stakeholders need BOCRA's published cybersecurity and CIRT context",
     ],
     channels: [
       {
-        label: 'bw CIRT',
-        href: 'https://www.bocra.org.bw/bw-cirt',
+        label: 'National Cybersecurity Strategy',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.cybersecurityStrategy
+        ),
         description:
-          'Review BOCRA’s communications-sector CIRT role and mandate.',
-        external: true,
+          'Review Botswana’s mirrored national cybersecurity strategy on this site.',
+        external: false,
       },
       {
-        label: 'Electronic Communications Transactions',
-        href: 'https://www.bocra.org.bw/electronic-communications-transactions',
+        label: 'Cybersecurity Act, 2025',
+        href: getPublicationResourceUrl(FEATURED_RESOURCE_SLUGS.cybersecurityAct),
         description:
-          'Access BOCRA’s published material on electronic transactions and secure signatures.',
-        external: true,
+          'Open the mirrored Cybersecurity Act, 2025 without leaving this site.',
+        external: false,
       },
       {
-        label: 'Electronic Evidence',
-        href: 'https://www.bocra.org.bw/electronic-evidence',
+        label: 'Electronic Transactions Act',
+        href: getPublicationResourceUrl(
+          FEATURED_RESOURCE_SLUGS.electronicTransactionsAct
+        ),
         description:
-          'Review electronic evidence certification and admissibility references.',
-        external: true,
+          'Use the mirrored electronic transactions legislation as the core legal reference.',
+        external: false,
       },
     ],
   },
@@ -314,9 +337,10 @@ export const SERVICE_PORTALS = [
   },
   {
     label: 'Licence Verification',
-    href: 'https://customerportal.bocra.org.bw',
-    description: 'Published licence verification channel',
-    external: true,
+    href: PORTAL_LICENCE_VERIFICATION_URL,
+    description:
+      'Sign in and search the mirrored licence register inside the new portal',
+    external: false,
   },
   {
     label: 'Telecoms Statistics',
