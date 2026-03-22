@@ -107,17 +107,9 @@ export default function Footer() {
           {/* Bottom Footer */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/70">
             <p>&copy; {currentYear} BOCRA. All rights reserved.</p>
-            <div className="flex items-center gap-6">
-              <a href="#" className="hover:text-bocra-golden-yellow transition-colors">
-                Privacy Policy
-              </a>
-              <a href="#" className="hover:text-bocra-golden-yellow transition-colors">
-                Terms of Service
-              </a>
-              <a href="#" className="hover:text-bocra-golden-yellow transition-colors">
-                Accessibility
-              </a>
-            </div>
+            <p className="text-center md:text-right">
+              Public guidance, publications, and contact routes for BOCRA services.
+            </p>
           </div>
         </div>
       </div>

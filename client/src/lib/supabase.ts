@@ -225,25 +225,3 @@ export async function submitContactForm(data: {
   }
 }
 
-/**
- * Helper to search domains
- */
-export async function searchDomains(domainName: string) {
-  if (!isSupabaseConfigured()) {
-    throw new Error('Supabase not configured');
-  }
-
-  try {
-    const { data, error } = await supabase
-      .from('domains')
-      .select('*')
-      .ilike('domain_name', `%${domainName}%`)
-      .limit(10);
-
-    if (error) throw error;
-    return data || [];
-  } catch (error) {
-    console.error('Error searching domains:', error);
-    throw error;
-  }
-}

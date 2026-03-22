@@ -7,6 +7,8 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 export const SITE_NAME = 'BOCRA';
 export const SITE_FULL_NAME = 'Botswana Communications Regulatory Authority';
 export const SITE_DESCRIPTION = 'BOCRA is mandated to regulate telecommunications, broadcasting, postal, and internet services in Botswana in the public interest.';
+export const SITE_URL =
+  import.meta.env.VITE_SITE_URL || 'https://bocra-website-gilt.vercel.app';
 
 const CONTACT_LOCATION_QUERY =
   'Botswana Communications Regulatory Authority, Plot 50671 Independence Avenue, Gaborone, Botswana';
@@ -127,7 +129,7 @@ export const REGULATORY_AREAS = [
   },
   {
     title: 'Internet Governance',
-    description: 'Managing .bw domains and internet infrastructure',
+    description: 'Providing .bw policy guidance and internet governance oversight',
   },
 ];
 

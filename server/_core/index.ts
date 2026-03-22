@@ -4,6 +4,7 @@ import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerSupabaseAuthRoutes } from "./supabase-auth";
+import { registerDashboardRoutes } from "./dashboard-routes";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -38,6 +39,7 @@ async function startServer() {
   app.use(cookieParser());
   // Supabase auth routes
   registerSupabaseAuthRoutes(app);
+  registerDashboardRoutes(app);
   // tRPC API
   app.use(
     "/api/trpc",
