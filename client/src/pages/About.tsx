@@ -17,6 +17,7 @@ import {
   Youtube,
 } from 'lucide-react';
 import { CONTACT_DETAILS, SITE_DESCRIPTION, SOCIAL_LINKS } from '@/const';
+import { BOARD_MEMBERS } from '@/content/governance';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -233,6 +234,65 @@ export default function About() {
                 </div>
               </Card>
             </div>
+          </div>
+        </section>
+
+        {/* Board Members Section */}
+        <section className="container py-12 md:py-16">
+          <div className="mb-12 space-y-4">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-bocra-teal">
+              Leadership
+            </p>
+            <h2 className="text-3xl font-bold text-bocra-text-primary md:text-4xl">
+              Board of Directors
+            </h2>
+            <p className="max-w-2xl text-bocra-text-secondary">
+              BOCRA's Board provides strategic direction for the Authority in line with Botswana's digital economy and communications transformation priorities.
+            </p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {BOARD_MEMBERS.slice(0, 6).map((member) => (
+              <Card key={member.name} className="border-0 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <div className="mx-auto w-40 h-40 overflow-hidden">
+                  {member.imageUrl ? (
+                    <img
+                      src={member.imageUrl}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-bocra-teal/10">
+                      <Users className="w-10 h-10 text-bocra-teal/30" />
+                    </div>
+                  )}
+                </div>
+                <div className="p-5 text-center">
+                  <h3 className="text-lg font-semibold text-bocra-text-primary mb-1">
+                    {member.name}
+                  </h3>
+                  <p className="text-base font-semibold text-bocra-teal">
+                    {member.role}
+                  </p>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <div className="mt-8 text-center">
+            <Button
+              asChild
+              className="bg-bocra-teal hover:bg-bocra-teal/90 text-white"
+            >
+              <a href="/board-of-directors">
+                View All Board Members
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </a>
+            </Button>
           </div>
         </section>
 

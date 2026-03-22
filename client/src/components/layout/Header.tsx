@@ -150,7 +150,7 @@ export default function Header() {
                   setIsMobileMenuOpen(false);
                 }}
               >
-                Open Portal
+                Log in / Sign in
               </Button>
               {user?.role === 'admin' && (
                 <Button
@@ -222,7 +222,7 @@ export default function Header() {
                 className="hidden sm:inline-flex bg-bocra-teal hover:bg-bocra-teal/90 text-white"
                 onClick={() => (window.location.href = portalUrl)}
               >
-                Portal
+                Log in / Sign in
               </Button>
 
               {user?.role === 'admin' && (

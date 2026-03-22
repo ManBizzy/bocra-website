@@ -18,10 +18,10 @@ export default function PortalHighlightSection() {
         transition={{ duration: 0.6 }}
         className="container text-center"
       >
-        <h2 className="mb-4 text-3xl font-bold md:text-4xl">
+        <h2 className="mb-4 text-3xl font-bold text-black md:text-4xl">
           One BOCRA View for Citizens and Staff
         </h2>
-        <p className="mx-auto mb-6 max-w-2xl text-lg text-white/90">
+        <p className="mx-auto mb-6 max-w-2xl text-lg text-black">
           Sign in to verify licence holders, review complaint activity, and
           use the same Supabase-backed demo accounts that feed the admin queue.
         </p>
@@ -30,7 +30,7 @@ export default function PortalHighlightSection() {
           {featureHighlights.map((item) => (
             <span
               key={item}
-              className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 backdrop-blur-sm"
+              className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-black backdrop-blur-sm"
             >
               {item}
             </span>

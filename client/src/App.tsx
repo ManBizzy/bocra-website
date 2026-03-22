@@ -6,7 +6,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { Suspense, lazy } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { Skeleton } from "@/components/ui/skeleton";
+import BocraLoadingSpinner from "@/components/BocraLoadingSpinner";
 
 // Lazy load pages
 const Home = lazy(() => import("./pages/Home"));
@@ -33,11 +33,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 function LoadingFallback() {
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="space-y-4 w-full max-w-md px-4">
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
-        <Skeleton className="h-12 w-full" />
-      </div>
+      <BocraLoadingSpinner size="lg" message="Loading page..." />
     </div>
   );
 }

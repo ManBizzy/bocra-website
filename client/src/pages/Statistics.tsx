@@ -32,7 +32,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
+import BocraLoadingSpinner from '@/components/BocraLoadingSpinner';
 
 const CHART_COLORS = [
   '#1B7F79',
@@ -309,10 +309,8 @@ export default function Statistics() {
           </div>
 
           {loading ? (
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {[1, 2, 3].map((item) => (
-                <Skeleton key={item} className="h-64 w-full" />
-              ))}
+            <div className="flex items-center justify-center py-16">
+              <BocraLoadingSpinner size="lg" message="Loading statistics..." />
             </div>
           ) : error ? (
             <Card className="p-8">
