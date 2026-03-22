@@ -37,7 +37,7 @@
 - [x] News listing page with filters
 - [x] News article detail page
 - [x] Publications page with document listing
-- [ ] Contact page with contact form
+- [x] Contact page with contact form
 
 ## Phase 5: Citizen Portal
 

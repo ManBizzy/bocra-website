@@ -202,8 +202,8 @@ export default function Publications() {
         {/* Hero Section */}
         <section className="w-full bg-gradient-to-r from-bocra-teal to-bocra-forest-green py-16 md:py-20">
           <div className="container">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Publications & Documents</h1>
-            <p className="text-xl text-white/90">Access BOCRA reports, guidelines, and policy documents</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-black mb-4">Publications & Documents</h1>
+            <p className="text-xl text-black/90">Access BOCRA reports, guidelines, and policy documents</p>
           </div>
         </section>
 

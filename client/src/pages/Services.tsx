@@ -121,10 +121,10 @@ export default function Services() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-bocra-teal to-bocra-forest-green text-white py-16">
+      <section className="bg-gradient-to-r from-bocra-teal to-bocra-forest-green text-black py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-5xl font-bold mb-4">Our Services</h1>
-          <p className="text-xl text-white/90 max-w-2xl">
+          <h1 className="text-5xl font-bold mb-4 text-black">Our Services</h1>
+          <p className="text-xl text-black/90 max-w-2xl">
             Comprehensive regulatory services supporting telecommunications, broadcasting, and internet infrastructure in Botswana.
           </p>
         </div>

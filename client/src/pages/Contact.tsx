@@ -182,8 +182,8 @@ export default function Contact() {
         {/* Hero Section */}
         <section className="w-full bg-gradient-to-r from-bocra-teal to-bocra-forest-green py-16 md:py-20">
           <div className="container">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Contact Us</h1>
-            <p className="text-xl text-white/90">Get in touch with BOCRA for inquiries, complaints, or feedback</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-black mb-4">Contact Us</h1>
+            <p className="text-xl text-black/90">Get in touch with BOCRA for inquiries, complaints, or feedback</p>
           </div>
         </section>
 
