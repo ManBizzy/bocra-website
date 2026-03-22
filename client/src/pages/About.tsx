@@ -4,15 +4,19 @@ import {
   Award,
   Building2,
   Eye,
+  Facebook,
   Globe,
   Landmark,
+  Linkedin,
   Radio,
   ShieldCheck,
   Sparkles,
   Target,
+  Twitter,
   Users,
+  Youtube,
 } from 'lucide-react';
-import { CONTACT_DETAILS, SITE_DESCRIPTION } from '@/const';
+import { CONTACT_DETAILS, SITE_DESCRIPTION, SOCIAL_LINKS } from '@/const';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -130,6 +134,13 @@ const MANDATE_POINTS = [
   'Support a digitally driven society through transparent, converged regulation.',
 ] as const;
 
+const SOCIAL_ICONS = {
+  Facebook,
+  LinkedIn: Linkedin,
+  YouTube: Youtube,
+  X: Twitter,
+} as const;
+
 export default function About() {
   return (
     <>
@@ -174,6 +185,29 @@ export default function About() {
                   matters while promoting competition, innovation, consumer
                   protection, and universal access.
                 </p>
+                <div className="pt-2">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-bocra-text-muted">
+                    Follow BOCRA
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    {SOCIAL_LINKS.map((link) => {
+                      const Icon = SOCIAL_ICONS[link.label];
+
+                      return (
+                        <a
+                          key={link.label}
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 rounded-full border border-bocra-border bg-bocra-light-grey px-4 py-2 text-sm font-semibold text-bocra-text-primary transition-colors hover:border-bocra-teal hover:text-bocra-teal"
+                        >
+                          <Icon className="h-4 w-4" />
+                          {link.label}
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
               <Card className="border-0 bg-bocra-deep-teal px-6 py-6 text-white shadow-lg">

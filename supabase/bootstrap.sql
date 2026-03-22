@@ -40,8 +40,10 @@ create table if not exists public.news (
   slug text not null unique,
   excerpt text not null,
   content text not null,
-  category text not null check (category in ('announcement', 'consultation', 'regulation', 'update')),
+  category text not null check (category in ('announcement', 'consultation', 'regulation', 'update', 'vacancy')),
   featured_image_url text,
+  source_url text,
+  source_label text,
   published boolean not null default true,
   published_at timestamptz not null default now(),
   created_at timestamptz not null default now()

@@ -1,9 +1,15 @@
-import { Mail, Phone, MapPin } from 'lucide-react';
-import { CONTACT_DETAILS, SITE_FULL_NAME } from '@/const';
+import { Facebook, Linkedin, Mail, MapPin, Phone, Twitter, Youtube } from 'lucide-react';
+import { CONTACT_DETAILS, SITE_FULL_NAME, SOCIAL_LINKS } from '@/const';
 import BrandLogo from '@/components/branding/BrandLogo';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const socialIcons = {
+    Facebook,
+    LinkedIn: Linkedin,
+    YouTube: Youtube,
+    X: Twitter,
+  } as const;
 
   return (
     <footer className="bg-bocra-deep-teal text-white">
@@ -18,6 +24,24 @@ export default function Footer() {
             <p className="text-sm text-white/80 leading-relaxed">
               {SITE_FULL_NAME} regulates telecommunications, broadcasting, postal, and internet services in Botswana.
             </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              {SOCIAL_LINKS.map((link) => {
+                const Icon = socialIcons[link.label];
+
+                return (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={link.label}
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/80 transition-colors hover:border-bocra-golden-yellow hover:text-bocra-golden-yellow"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </a>
+                );
+              })}
+            </div>
           </div>
 
           {/* Quick Links */}

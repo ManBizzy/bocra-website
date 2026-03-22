@@ -17,8 +17,15 @@ export interface News {
   slug: string;
   excerpt: string;
   content: string;
-  category: 'announcement' | 'consultation' | 'regulation' | 'update';
+  category:
+    | 'announcement'
+    | 'consultation'
+    | 'regulation'
+    | 'update'
+    | 'vacancy';
   featured_image_url?: string;
+  source_url?: string | null;
+  source_label?: string | null;
   published_at: string;
   created_at: string;
   updated_at: string;

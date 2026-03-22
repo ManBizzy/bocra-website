@@ -82,7 +82,7 @@ export default function NewsArticle({ slug }: { slug: string }) {
 
                 <div className="mt-6 max-w-4xl">
                   <span
-                    className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold text-white ${NEWS_CATEGORIES[article.category].color}`}
+                    className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${NEWS_CATEGORIES[article.category].color}`}
                   >
                     {NEWS_CATEGORIES[article.category].label}
                   </span>
@@ -150,7 +150,24 @@ export default function NewsArticle({ slug }: { slug: string }) {
                         <strong className="text-bocra-text-primary">Published:</strong>{' '}
                         {format(new Date(article.published_at), 'dd MMM yyyy')}
                       </p>
+                      {article.source_label && (
+                        <p>
+                          <strong className="text-bocra-text-primary">Source:</strong>{' '}
+                          {article.source_label}
+                        </p>
+                      )}
                     </div>
+                    {article.source_url && (
+                      <a
+                        href={article.source_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-5 inline-flex items-center gap-2 font-semibold text-bocra-teal transition-all hover:gap-3"
+                      >
+                        Open Original Source
+                        <ArrowRight className="h-4 w-4" />
+                      </a>
+                    )}
                   </Card>
 
                   <Card className="bg-white p-6">
