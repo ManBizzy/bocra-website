@@ -36,7 +36,7 @@
 - [x] Domain Registry page with search functionality
 - [x] News listing page with filters
 - [x] News article detail page
-- [ ] Publications page with document listing
+- [x] Publications page with document listing
 - [ ] Contact page with contact form
 
 ## Phase 5: Citizen Portal
