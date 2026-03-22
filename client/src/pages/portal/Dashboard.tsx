@@ -188,6 +188,49 @@ const initialLicenseApplicationForm: LicenseApplicationFormState = {
   summary: '',
 };
 
+const emptyComplaintSummary: PortalOverview['complaintSummary'] = {
+  total: 0,
+  open: 0,
+  in_review: 0,
+  resolved: 0,
+  closed: 0,
+};
+
+const emptyLicenseApplicationSummary: PortalOverview['licenseApplicationSummary'] =
+  {
+    total: 0,
+    submitted: 0,
+    under_review: 0,
+    more_information_required: 0,
+    approved: 0,
+    rejected: 0,
+  };
+
+function normalizePortalOverview(payload: Partial<PortalOverview> | null | undefined) {
+  return {
+    complaintSummary: {
+      ...emptyComplaintSummary,
+      ...(payload?.complaintSummary ?? {}),
+    },
+    complaints: Array.isArray(payload?.complaints) ? payload.complaints : [],
+    consultations: Array.isArray(payload?.consultations)
+      ? payload.consultations
+      : [],
+    licenseApplications: Array.isArray(payload?.licenseApplications)
+      ? payload.licenseApplications.map((application) => ({
+          ...application,
+          attachments: Array.isArray(application.attachments)
+            ? application.attachments
+            : [],
+        }))
+      : [],
+    licenseApplicationSummary: {
+      ...emptyLicenseApplicationSummary,
+      ...(payload?.licenseApplicationSummary ?? {}),
+    },
+  } satisfies PortalOverview;
+}
+
 function ComplaintProgress({ status }: { status: ComplaintStatus }) {
   const currentIndex = complaintStageOrder.indexOf(status);
 
@@ -328,8 +371,8 @@ export default function PortalDashboard() {
         throw new Error('Could not load portal activity.');
       }
 
-      const payload = (await response.json()) as PortalOverview;
-      setOverview(payload);
+      const payload = (await response.json()) as Partial<PortalOverview>;
+      setOverview(normalizePortalOverview(payload));
       setOverviewError(null);
     } catch (error) {
       setOverviewError(
