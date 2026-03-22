@@ -49,6 +49,25 @@ const STATIC_SERVICE_RESULTS: SearchResult[] = SERVICE_AREAS.map((service) => ({
   ],
 }));
 
+STATIC_SERVICE_RESULTS.push(
+  {
+    id: 'page-board-of-directors',
+    group: 'Service Pages',
+    title: 'Board of Directors',
+    description: 'BOCRA governance page with the current board roster and member profiles.',
+    href: '/board-of-directors',
+    keywords: ['board', 'governance', 'leadership', 'chairperson', 'directors'],
+  },
+  {
+    id: 'page-executive-management',
+    group: 'Service Pages',
+    title: 'Executive Management',
+    description: 'BOCRA executive leadership roster embedded into the current website.',
+    href: '/executive-management',
+    keywords: ['executive', 'management', 'leadership', 'chief executive'],
+  }
+);
+
 const GROUP_ORDER: SearchResult['group'][] = [
   'Service Pages',
   'News',
@@ -204,10 +223,10 @@ export default function SiteSearch({ open, onOpenChange }: SiteSearchProps) {
       open={open}
       onOpenChange={onOpenChange}
       title="Search BOCRA"
-      description="Search services, news, publications, and consultations."
+      description="Search services, governance pages, news, publications, and consultations."
       className="max-w-2xl"
     >
-      <CommandInput placeholder="Search services, news, publications, and consultations..." />
+      <CommandInput placeholder="Search services, leadership pages, news, publications, and consultations..." />
       <CommandList>
         <CommandEmpty>
           {loading ? 'Loading search index...' : 'No matching BOCRA content found.'}

@@ -505,18 +505,25 @@ export default function About() {
                 <div className="rounded-2xl bg-white/10 p-4">
                   <p className="font-semibold">Governance and board details</p>
                   <p className="mt-2 text-white/75">
-                    View BOCRA’s current board and governance material on the
-                    official BOCRA website.
+                    Review BOCRA's current board and executive leadership on
+                    internal pages sourced from the official BOCRA website.
                   </p>
-                  <a
-                    href="https://www.bocra.org.bw/board-of-directors"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 inline-flex items-center gap-2 font-semibold text-white transition-all hover:gap-3"
-                  >
-                    Board of Directors
-                    <ArrowRight className="h-4 w-4" />
-                  </a>
+                  <div className="mt-3 flex flex-wrap gap-4">
+                    <a
+                      href="/board-of-directors"
+                      className="inline-flex items-center gap-2 font-semibold text-white transition-all hover:gap-3"
+                    >
+                      Board of Directors
+                      <ArrowRight className="h-4 w-4" />
+                    </a>
+                    <a
+                      href="/executive-management"
+                      className="inline-flex items-center gap-2 font-semibold text-white transition-all hover:gap-3"
+                    >
+                      Executive Management
+                      <ArrowRight className="h-4 w-4" />
+                    </a>
+                  </div>
                 </div>
                 <div className="rounded-2xl bg-white/10 p-4">
                   <p className="font-semibold">Source material</p>

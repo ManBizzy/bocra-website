@@ -11,6 +11,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Lazy load pages
 const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About"));
+const BoardOfDirectors = lazy(() => import("./pages/BoardOfDirectors"));
+const ExecutiveManagement = lazy(() => import("./pages/ExecutiveManagement"));
 const Services = lazy(() => import("./pages/Services"));
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
 const Consultations = lazy(() => import("./pages/Consultations"));
@@ -69,6 +71,26 @@ function Router() {
           <PublicLayout>
             <Suspense fallback={<LoadingFallback />}>
               <About />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/board-of-directors"}>
+        {() => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <BoardOfDirectors />
+            </Suspense>
+          </PublicLayout>
+        )}
+      </Route>
+
+      <Route path={"/executive-management"}>
+        {() => (
+          <PublicLayout>
+            <Suspense fallback={<LoadingFallback />}>
+              <ExecutiveManagement />
             </Suspense>
           </PublicLayout>
         )}
