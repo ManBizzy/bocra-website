@@ -69,6 +69,60 @@ type AdminOverview = {
   licenseApplications: AdminLicenseApplication[];
 };
 
+const emptyComplaintSummary: AdminOverview['complaintSummary'] = {
+  total: 0,
+  open: 0,
+  in_review: 0,
+  resolved: 0,
+  closed: 0,
+};
+
+const emptyContactSummary: AdminOverview['contactSummary'] = {
+  total: 0,
+  new: 0,
+  read: 0,
+  responded: 0,
+};
+
+const emptyLicenseApplicationSummary: AdminOverview['licenseApplicationSummary'] =
+  {
+    total: 0,
+    submitted: 0,
+    under_review: 0,
+    more_information_required: 0,
+    approved: 0,
+    rejected: 0,
+  };
+
+function normalizeAdminOverview(payload: Partial<AdminOverview> | null | undefined) {
+  return {
+    complaintSummary: {
+      ...emptyComplaintSummary,
+      ...(payload?.complaintSummary ?? {}),
+    },
+    contactSummary: {
+      ...emptyContactSummary,
+      ...(payload?.contactSummary ?? {}),
+    },
+    licenseApplicationSummary: {
+      ...emptyLicenseApplicationSummary,
+      ...(payload?.licenseApplicationSummary ?? {}),
+    },
+    complaints: Array.isArray(payload?.complaints) ? payload.complaints : [],
+    contactSubmissions: Array.isArray(payload?.contactSubmissions)
+      ? payload.contactSubmissions
+      : [],
+    licenseApplications: Array.isArray(payload?.licenseApplications)
+      ? payload.licenseApplications.map((application) => ({
+          ...application,
+          attachments: Array.isArray(application.attachments)
+            ? application.attachments
+            : [],
+        }))
+      : [],
+  } satisfies AdminOverview;
+}
+
 const complaintBadgeClass: Record<ComplaintStatus, string> = {
   open: 'bg-bocra-dark-maroon text-white',
   in_review: 'bg-bocra-golden-yellow text-bocra-text-primary',
@@ -210,8 +264,8 @@ export default function AdminDashboard() {
         throw new Error('Could not load admin queues.');
       }
 
-      const payload = (await response.json()) as AdminOverview;
-      setOverview(payload);
+      const payload = (await response.json()) as Partial<AdminOverview>;
+      setOverview(normalizeAdminOverview(payload));
       setOverviewError(null);
     } catch (error) {
       setOverviewError(
