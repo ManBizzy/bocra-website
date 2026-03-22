@@ -580,7 +580,8 @@ export default function PortalDashboard() {
           </Button>
         </div>
 
-        <div className="mt-8 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+        <div className="mt-8 flex flex-col gap-8">
+          <div className="order-2 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <Card id="licence-verification">
             <CardHeader>
               <CardTitle>Licence Verification</CardTitle>
@@ -771,7 +772,7 @@ export default function PortalDashboard() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+          <div className="order-1 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <div className="space-y-6">
             <Tabs
               value={workflowTab}
@@ -1422,6 +1423,7 @@ export default function PortalDashboard() {
                 )}
               </CardContent>
             </Card>
+          </div>
           </div>
         </div>
 
