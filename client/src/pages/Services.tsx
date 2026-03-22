@@ -106,6 +106,12 @@ export default function Services() {
                   service.icon as keyof typeof SERVICE_ICON_MAP
                 ] ?? Radio;
               const accent = getAccentClasses(service.accent);
+              const officialChannel =
+                service.slug === 'domain-registry'
+                  ? service.channels.find(
+                      (channel) => channel.href === 'https://nic.net.bw'
+                    ) ?? service.channels[0]
+                  : service.channels[0];
 
               return (
                 <Card
@@ -143,7 +149,7 @@ export default function Services() {
                       <ArrowRight className="h-4 w-4" />
                     </a>
                     <a
-                      href={service.channels[0].href}
+                      href={officialChannel.href}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 text-sm font-medium text-bocra-text-secondary transition-colors hover:text-bocra-teal"

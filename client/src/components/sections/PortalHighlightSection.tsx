@@ -76,7 +76,7 @@ export default function PortalHighlightSection() {
             className="bg-white px-8 py-6 text-base font-semibold text-bocra-teal hover:bg-white/90"
             onClick={() => (window.location.href = getLoginUrl())}
           >
-            Open Citizen Portal
+            Open Portal
           </Button>
         </motion.div>
       </motion.div>

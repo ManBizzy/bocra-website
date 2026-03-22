@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { ArrowRight, CalendarDays, FileText, MessageSquare } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  CalendarDays,
+  FileText,
+  Home,
+  MessageSquare,
+} from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { Badge } from '@/components/ui/badge';
@@ -106,6 +113,23 @@ export default function PortalDashboard() {
         <title>Citizen Portal | BOCRA</title>
       </Helmet>
       <div className="container py-12 md:py-20">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 text-sm">
+          <a
+            href="/"
+            className="inline-flex items-center gap-2 text-bocra-text-secondary transition-colors hover:text-bocra-teal"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to website
+          </a>
+          <a
+            href="/"
+            className="inline-flex items-center gap-2 text-bocra-text-secondary transition-colors hover:text-bocra-teal"
+          >
+            <Home className="h-4 w-4" />
+            Homepage
+          </a>
+        </div>
+
         <div className="mb-8 flex items-center justify-between gap-4">
           <div>
             <h1 className="text-4xl font-bold">Citizen Portal</h1>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
+import { ArrowLeft, Home, Inbox, Mail, MessageSquare } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
-import { Inbox, Mail, MessageSquare } from 'lucide-react';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { ADMIN_LOGIN_URL } from '@/const';
 import { Badge } from '@/components/ui/badge';
@@ -127,10 +127,10 @@ export default function AdminDashboard() {
             This account does not have admin access.
           </p>
           <a
-            href={ADMIN_LOGIN_URL}
+            href="/portal/login"
             className="mt-6 inline-block text-bocra-teal hover:underline"
           >
-            Return to admin sign in
+            Return to portal sign in
           </a>
         </div>
       </>
@@ -143,6 +143,23 @@ export default function AdminDashboard() {
         <title>Admin Dashboard | BOCRA</title>
       </Helmet>
       <div className="container py-12 md:py-20">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 text-sm">
+          <a
+            href="/"
+            className="inline-flex items-center gap-2 text-bocra-text-secondary transition-colors hover:text-bocra-teal"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to website
+          </a>
+          <a
+            href="/"
+            className="inline-flex items-center gap-2 text-bocra-text-secondary transition-colors hover:text-bocra-teal"
+          >
+            <Home className="h-4 w-4" />
+            Homepage
+          </a>
+        </div>
+
         <div className="mb-8 flex items-center justify-between gap-4">
           <div>
             <h1 className="text-4xl font-bold">Admin Dashboard</h1>
@@ -245,7 +262,7 @@ export default function AdminDashboard() {
                           <p className="mt-1 text-sm text-bocra-text-secondary">
                             {complaint.reporter_name}
                             {complaint.reporter_email
-                              ? ` • ${complaint.reporter_email}`
+                              ? ` - ${complaint.reporter_email}`
                               : ''}
                           </p>
                         </div>
@@ -307,7 +324,7 @@ export default function AdminDashboard() {
                             {submission.subject}
                           </p>
                           <p className="mt-1 text-sm text-bocra-text-secondary">
-                            {submission.name} • {submission.email}
+                            {submission.name} - {submission.email}
                           </p>
                         </div>
                         <Badge className={contactBadgeClass[submission.status]}>

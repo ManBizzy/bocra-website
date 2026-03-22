@@ -81,6 +81,17 @@ export default function ServiceDetail({ slug }: ServiceDetailProps) {
   const relatedServices = SERVICE_AREAS.filter(
     (candidate) => candidate.slug !== service.slug
   ).slice(0, 3);
+  const orderedChannels =
+    service.slug === 'domain-registry'
+      ? [
+          ...service.channels.filter(
+            (channel) => channel.href === 'https://nic.net.bw'
+          ),
+          ...service.channels.filter(
+            (channel) => channel.href !== 'https://nic.net.bw'
+          ),
+        ]
+      : service.channels;
   const Icon =
     SERVICE_ICON_MAP[service.icon as keyof typeof SERVICE_ICON_MAP] ?? Radio;
 
@@ -124,7 +135,7 @@ export default function ServiceDetail({ slug }: ServiceDetailProps) {
                 </div>
 
                 <div className="flex flex-wrap gap-3 pt-2">
-                  {service.channels.slice(0, 2).map((channel, index) => (
+                  {orderedChannels.slice(0, 2).map((channel, index) => (
                     <Button
                       key={channel.label}
                       variant={index === 0 ? 'default' : 'outline'}
@@ -228,7 +239,7 @@ export default function ServiceDetail({ slug }: ServiceDetailProps) {
             Service channels and references
           </h2>
           <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {service.channels.map((channel) => (
+            {orderedChannels.map((channel) => (
               <Card
                 key={channel.label}
                 className="flex h-full flex-col bg-white p-6 transition-shadow hover:shadow-lg"
