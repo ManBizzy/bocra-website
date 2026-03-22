@@ -317,6 +317,32 @@ function fileToBase64(file: File) {
   });
 }
 
+async function readApiJson<T>(
+  response: Response,
+  fallbackMessage: string
+): Promise<T> {
+  const contentType = response.headers.get('content-type') ?? '';
+  const payload = contentType.includes('application/json')
+    ? await response.json().catch(() => null)
+    : null;
+
+  if (!response.ok) {
+    throw new Error(
+      typeof payload === 'object' && payload && 'error' in payload
+        ? String(payload.error)
+        : fallbackMessage
+    );
+  }
+
+  if (!payload || typeof payload !== 'object') {
+    throw new Error(
+      'The portal service returned an invalid response. Redeploy the backend and try again.'
+    );
+  }
+
+  return payload as T;
+}
+
 export default function PortalDashboard() {
   const { user, loading, logout } = useAuth({
     redirectOnUnauthenticated: true,
@@ -367,11 +393,10 @@ export default function PortalDashboard() {
         credentials: 'include',
       });
 
-      if (!response.ok) {
-        throw new Error('Could not load portal activity.');
-      }
-
-      const payload = (await response.json()) as Partial<PortalOverview>;
+      const payload = await readApiJson<Partial<PortalOverview>>(
+        response,
+        'Could not load portal activity.'
+      );
       setOverview(normalizePortalOverview(payload));
       setOverviewError(null);
     } catch (error) {
@@ -448,10 +473,15 @@ export default function PortalDashboard() {
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json().catch(() => null);
+      const result = await readApiJson<{ id?: string }>(
+        response,
+        'Could not submit complaint.'
+      );
 
-      if (!response.ok) {
-        throw new Error(result?.error ?? 'Could not submit complaint.');
+      if (!result.id) {
+        throw new Error(
+          'Complaint service did not confirm the submission. Redeploy the backend and try again.'
+        );
       }
 
       setComplaintForm(initialComplaintForm);
@@ -515,10 +545,15 @@ export default function PortalDashboard() {
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json().catch(() => null);
+      const result = await readApiJson<{ id?: string }>(
+        response,
+        'Could not submit licence application.'
+      );
 
-      if (!response.ok) {
-        throw new Error(result?.error ?? 'Could not submit licence application.');
+      if (!result.id) {
+        throw new Error(
+          'Licence application service did not confirm the submission. Redeploy the backend and try again.'
+        );
       }
 
       setLicenseApplicationForm((current) => ({
@@ -1219,6 +1254,15 @@ export default function PortalDashboard() {
                                   Contact:
                                 </span>{' '}
                                 {application.contact_email}
+                              </div>
+                              <div className="rounded-xl bg-bocra-light-grey px-3 py-2 md:col-span-3">
+                                <span className="font-semibold text-bocra-text-primary">
+                                  Last updated:
+                                </span>{' '}
+                                {format(
+                                  new Date(application.updated_at),
+                                  'dd MMM yyyy'
+                                )}
                               </div>
                             </div>
 

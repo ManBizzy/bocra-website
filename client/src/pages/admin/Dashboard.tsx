@@ -23,6 +23,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
 
 type ComplaintStatus = 'open' | 'in_review' | 'resolved' | 'closed';
 type ComplaintPriority = 'low' | 'medium' | 'high';
@@ -251,6 +252,9 @@ export default function AdminDashboard() {
   );
   const [updatingLicenseApplicationId, setUpdatingLicenseApplicationId] =
     useState<string | null>(null);
+  const [licenseApplicationNotes, setLicenseApplicationNotes] = useState<
+    Record<string, string>
+  >({});
 
   const loadOverview = async () => {
     setOverviewLoading(true);
@@ -265,7 +269,16 @@ export default function AdminDashboard() {
       }
 
       const payload = (await response.json()) as Partial<AdminOverview>;
-      setOverview(normalizeAdminOverview(payload));
+      const normalizedOverview = normalizeAdminOverview(payload);
+      setOverview(normalizedOverview);
+      setLicenseApplicationNotes(
+        Object.fromEntries(
+          normalizedOverview.licenseApplications.map((application) => [
+            application.id,
+            application.review_notes ?? '',
+          ])
+        )
+      );
       setOverviewError(null);
     } catch (error) {
       setOverviewError(
@@ -323,7 +336,8 @@ export default function AdminDashboard() {
 
   const handleLicenseApplicationStatusUpdate = async (
     applicationId: string,
-    nextStatus: LicenseApplicationStatus
+    nextStatus: LicenseApplicationStatus,
+    reviewNotes = licenseApplicationNotes[applicationId] ?? ''
   ) => {
     setUpdatingLicenseApplicationId(applicationId);
 
@@ -338,6 +352,7 @@ export default function AdminDashboard() {
           credentials: 'include',
           body: JSON.stringify({
             status: nextStatus,
+            reviewNotes,
           }),
         }
       );
@@ -350,7 +365,7 @@ export default function AdminDashboard() {
         );
       }
 
-      toast.success(`Application moved to ${nextStatus.replaceAll('_', ' ')}.`);
+      toast.success(`Application updated to ${nextStatus.replaceAll('_', ' ')}.`);
       await loadOverview();
     } catch (error) {
       toast.error(
@@ -361,6 +376,16 @@ export default function AdminDashboard() {
     } finally {
       setUpdatingLicenseApplicationId(null);
     }
+  };
+
+  const handleLicenseApplicationNoteChange = (
+    applicationId: string,
+    nextValue: string
+  ) => {
+    setLicenseApplicationNotes((current) => ({
+      ...current,
+      [applicationId]: nextValue,
+    }));
   };
 
   if (!loading && user && user.role !== 'admin') {
@@ -659,12 +684,22 @@ export default function AdminDashboard() {
                         {application.summary}
                       </p>
 
-                      {application.review_notes && (
-                        <div className="mt-4 rounded-2xl bg-bocra-golden-yellow/15 p-4 text-sm text-bocra-text-primary">
-                          <span className="font-semibold">Review note:</span>{' '}
-                          {application.review_notes}
-                        </div>
-                      )}
+                      <div className="mt-4 space-y-2">
+                        <p className="text-sm font-semibold text-bocra-text-primary">
+                          BOCRA review note
+                        </p>
+                        <Textarea
+                          value={licenseApplicationNotes[application.id] ?? ''}
+                          onChange={(event) =>
+                            handleLicenseApplicationNoteChange(
+                              application.id,
+                              event.target.value
+                            )
+                          }
+                          placeholder="Add a note the citizen can see in the portal."
+                          className="min-h-24"
+                        />
+                      </div>
 
                       {application.attachments.length > 0 && (
                         <div className="mt-4 flex flex-wrap gap-3">
@@ -688,6 +723,21 @@ export default function AdminDashboard() {
                       <LicenseApplicationProgress status={application.status} />
 
                       <div className="mt-5 flex flex-wrap gap-2">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          disabled={updatingLicenseApplicationId === application.id}
+                          onClick={() =>
+                            void handleLicenseApplicationStatusUpdate(
+                              application.id,
+                              application.status,
+                              licenseApplicationNotes[application.id] ?? ''
+                            )
+                          }
+                        >
+                          Save note
+                        </Button>
                         {licenseApplicationStageOrder.map((status) => (
                           <Button
                             key={status}
@@ -708,7 +758,8 @@ export default function AdminDashboard() {
                             onClick={() =>
                               void handleLicenseApplicationStatusUpdate(
                                 application.id,
-                                status
+                                status,
+                                licenseApplicationNotes[application.id] ?? ''
                               )
                             }
                           >

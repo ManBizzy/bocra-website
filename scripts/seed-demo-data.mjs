@@ -193,6 +193,79 @@ async function seedComplaints(userId) {
   }
 }
 
+async function resetDemoLicenseApplications(userId) {
+  const { error } = await supabase
+    .from("license_applications")
+    .delete()
+    .eq("user_id", userId);
+
+  if (error) {
+    throw error;
+  }
+}
+
+async function seedLicenseApplications(userId, contactEmail) {
+  const { error } = await supabase.from("license_applications").insert([
+    {
+      user_id: userId,
+      application_type: "Type approval application",
+      organization_name: "Demo Citizen Telecom",
+      contact_name: "BOCRA Demo Citizen",
+      contact_email: contactEmail,
+      contact_phone: "+267 7000 0000",
+      service_area: "Type Approval",
+      summary:
+        "Application for evaluation of new terminal equipment for the Botswana market.",
+      status: "submitted",
+      review_notes: null,
+      attachments: [],
+      submitted_at: isoDaysAgo(1),
+      created_at: isoDaysAgo(1),
+      updated_at: isoDaysAgo(1),
+    },
+    {
+      user_id: userId,
+      application_type: "Spectrum assignment request",
+      organization_name: "Demo Citizen Telecom",
+      contact_name: "BOCRA Demo Citizen",
+      contact_email: contactEmail,
+      contact_phone: "+267 7000 0000",
+      service_area: "Spectrum Management",
+      summary:
+        "Request for temporary spectrum assignment to support an event deployment.",
+      status: "under_review",
+      review_notes:
+        "Technical review is in progress. BOCRA will confirm the next compliance step shortly.",
+      attachments: [],
+      submitted_at: isoDaysAgo(5),
+      created_at: isoDaysAgo(5),
+      updated_at: isoDaysAgo(3),
+    },
+    {
+      user_id: userId,
+      application_type: "Broadcasting licence",
+      organization_name: "Demo Citizen Media",
+      contact_name: "BOCRA Demo Citizen",
+      contact_email: contactEmail,
+      contact_phone: "+267 7000 0000",
+      service_area: "Broadcasting",
+      summary:
+        "Community broadcasting licence application with supporting coverage details.",
+      status: "more_information_required",
+      review_notes:
+        "Please provide the latest transmitter coverage map and proof of site access.",
+      attachments: [],
+      submitted_at: isoDaysAgo(9),
+      created_at: isoDaysAgo(9),
+      updated_at: isoDaysAgo(2),
+    },
+  ]);
+
+  if (error) {
+    throw error;
+  }
+}
+
 async function resetDemoContactSubmissions(demoEmails) {
   const { error } = await supabase
     .from("contact_submissions")
@@ -239,6 +312,8 @@ async function main() {
 
   await resetDemoComplaints(citizenUser.id);
   await seedComplaints(citizenUser.id);
+  await resetDemoLicenseApplications(citizenUser.id);
+  await seedLicenseApplications(citizenUser.id, demoUsers.citizen.email);
 
   const demoEmails = [demoUsers.admin.email, demoUsers.citizen.email];
   await resetDemoContactSubmissions(demoEmails);
@@ -258,6 +333,7 @@ async function main() {
           userId: citizenUser.id,
         },
         seededComplaints: 4,
+        seededLicenseApplications: 3,
         seededContactSubmissions: 2,
       },
       null,
